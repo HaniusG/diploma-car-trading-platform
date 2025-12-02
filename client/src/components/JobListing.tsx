@@ -3,10 +3,11 @@ import { AppContext } from '../context/AppContext'
 import { assets, JobCategories, JobLocations } from '../assets/assets'
 import JobCard from './JobCard'
 import type {Job} from '../context/AppContext'
+import CarCard from './CarCard'
 
 const JobListing = () => {
 
-  const { isSearched, searchFilter, setSearchFilter, jobs } = useContext(AppContext)
+  const { isSearched, searchFilter, setSearchFilter, jobs, cars } = useContext(AppContext)
 
   const [showFilter, setShowFilter] = useState<boolean>(false)
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -14,6 +15,9 @@ const JobListing = () => {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
 
   const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs)
+
+  const [filteredCars, setFilteredCars] = useState<Job[]>(cars)
+
 
  const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev: string[]) =>
@@ -40,15 +44,19 @@ const JobListing = () => {
 
     const matchesSearchLocation = (job: Job) => searchFilter.location === '' || job.location.toLowerCase().includes(searchFilter.location.toLowerCase())
 
-    const newFilteredJobs = jobs.slice().reverse().filter(
-      (job: Job) => matchesCategory(job) && matchesLocation(job) && matchesTitle(job) && matchesSearchLocation(job)
-    )
+    // const newFilteredJobs = jobs.slice().reverse().filter(
+    //   (job: Job) => matchesCategory(job) && matchesLocation(job) && matchesTitle(job) && matchesSearchLocation(job)
+    // )
 
-    setFilteredJobs(newFilteredJobs);
+    const newFilteredCars = cars.slice().reverse().filter(
+      (car: any) => matchesCategory(car) && matchesLocation(car) && matchesTitle(car) && matchesSearchLocation(car)
+    )
+    
+    setFilteredCars(newFilteredCars);
     setCurrentPage(1)
 
 
-  }, [jobs, selectedCategories, selectedLocations, searchFilter])
+  }, [cars, selectedCategories, selectedLocations, searchFilter])
 
   return (
     <div className='container 2xl:px-20 mx-auto flex flex-col lg:flex-row max-lg:space-y-8 py-8'>
@@ -126,28 +134,31 @@ const JobListing = () => {
       {/* Job listing */}
 
       <section className='w-full lg:w-3/4 text-gray-800 max-lg:px-4'>
-        <h3 className='font-medium text-3xl py-2' id='job-list'>Latest jobs</h3>
+        <h3 className='font-medium text-3xl py-2' id='job-list'>Latest cars</h3>
         <p className='mb-8'>Get your desired job from top companies</p>
         <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
-          {filteredJobs.slice((currentPage-1)*6, currentPage*6).map((job: any, index: number) => {
-            return <JobCard key={index} job={job} />
+          {filteredCars.slice((currentPage-1)*6, currentPage*6).map((car: any, index: number) => {
+            return <CarCard key={index} car={car} />
           })}
+          {/* {filteredJobs.slice((currentPage-1)*6, currentPage*6).map((job: any, index: number) => {
+            return <JobCard key={index} job={job} />
+          })} */}
         </div>
 
         {/* Pagination */}
 
-        {filteredJobs.length > 0 && (
+        {filteredCars.length > 0 && (
            <div className='flex items-center justify-center space-x-2 mt-10'>
             <a href="#job-list">
               <img onClick={()=>setCurrentPage(Math.max((currentPage-1),1))} src={assets.left_arrow_icon} alt="" />
             </a>
-            {Array.from({length:Math.ceil(filteredJobs.length/6)}).map((_, index)=>(
+            {Array.from({length:Math.ceil(filteredCars.length/6)}).map((_, index)=>(
               <a key={index} href="#job-list">
                 <button onClick={() => setCurrentPage(index+1)} className={`w-10 cursor-pointer h-10 flex items-center justify-center border border-gray-300 rounded ${currentPage === index + 1 ? 'bg-blue-100 text-blue-500' : 'text-gray-500'}`}>{index+1}</button>
               </a>
             ))}
              <a href="#job-list">
-              <img onClick={()=>setCurrentPage(Math.min((currentPage+1), Math.ceil(filteredJobs.length / 6)))} src={assets.right_arrow_icon} alt="" />
+              <img onClick={()=>setCurrentPage(Math.min((currentPage+1), Math.ceil(filteredCars.length / 6)))} src={assets.right_arrow_icon} alt="" />
             </a>
           </div>
         )}
