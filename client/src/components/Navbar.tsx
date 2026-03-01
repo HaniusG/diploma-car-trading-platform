@@ -29,7 +29,7 @@ const Navbar = () => {
               <UserButton />
             </div> :
             <div className='flex gap-4 max-sm:text-xs'>
-              <button onClick={() => setShowRecruiterLogin(true)} className='text-gray-600 cursor-pointer'>Recruiter Login</button>
+              <button onClick={() => setShowRecruiterLogin(true)} className='text-gray-600 cursor-pointer'>Seller Login</button>
               <button onClick={() => openSignIn()} className='bg-blue-600 hover:bg-blue-700 duration-200 cursor-pointer text-white px-6 sm:px-9 py-2 rounded-full'>Login</button>
             </div>
         }

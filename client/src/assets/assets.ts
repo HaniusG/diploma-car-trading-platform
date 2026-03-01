@@ -72,7 +72,7 @@ export const assets = {
     honda_logo
 }
 
-export const JobCategories = [
+export const CarCategories = [
     "Sedan",
     "SUV",
     "Van / Minivan",
@@ -82,7 +82,7 @@ export const JobCategories = [
     "Motorcycle",
 ]
 
-export const JobLocations = [
+export const CarLocations = [
     "Yerevan",
     "Gyumri",
     "Vanadzor",

@@ -168,7 +168,7 @@ export const AppContextProvider = (props: any) => {
 
   const [isSearched, setIsSearched] = useState<boolean>(false)
 
-  const [jobs, setJobs] = useState<Job[]>([])
+  const [cars, setCars] = useState<any>([])
 
   const [showRecruiterLogin, setShowRecruiterLogin] = useState<boolean>(false)
 
@@ -179,14 +179,14 @@ export const AppContextProvider = (props: any) => {
   const [userApplications, setUserApplications] = useState<UserApplication[]>([])
 
 
-  //Function fetching job data
-  const fetchJobs = async () => {
+  //Function fetching car data
+  const fetchCars = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/jobs')
+      const { data } = await axios.get(backendUrl + '/api/cars')
 
       if (data.success) {
-        setJobs(data.jobs)
-        console.log(data.jobs);
+        setCars(data.cars)
+        console.log(data.cars);
       } else {
         toast.error(data.message)
       }
@@ -248,7 +248,7 @@ export const AppContextProvider = (props: any) => {
   }
 
   useEffect(() => {
-    fetchJobs();
+    fetchCars();
 
     const storedCompanyToken: any = localStorage.getItem('companyToken')
 
@@ -274,7 +274,7 @@ export const AppContextProvider = (props: any) => {
   const value: any = {
     searchFilter, setSearchFilter,
     isSearched, setIsSearched,
-    jobs, setJobs,
+    cars, setCars,
     showRecruiterLogin, setShowRecruiterLogin,
     companyToken, setCompanyToken,
     companyData, setCompanyData,
@@ -283,7 +283,6 @@ export const AppContextProvider = (props: any) => {
     userApplications, setUserApplications,
     fetchUserData,
     fetchUserApplications,
-    cars
   }
 
   return (

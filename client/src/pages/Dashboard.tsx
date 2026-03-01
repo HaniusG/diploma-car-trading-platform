@@ -19,14 +19,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (companyData) {
-      navigate('/dashboard/manage-jobs')
+      navigate('/dashboard/manage-cars')
     }
   }, [companyData])
 
   return (
     <div className='min-h-screen'>
 
-      {/* Navbar for Recruiter Panel */}
+      {/* Navbar for Seller Panel */}
       <div className='shadow py-4'>
         <div className='px-5 flex justify-between items-center'>
           <div className='flex justify-center items-center'>
@@ -53,14 +53,14 @@ const Dashboard = () => {
         {/* Left sidebar with options to add, manage jobs, and view applications */}
         <div className='inline-block min-h-screen border-r-2'>
           <ul className='flex flex-col items-start pt-5 text-gray-800'>
-            <NavLink className={({ isActive }) => ` flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${isActive && 'bg-blue-100 border-r-4 border-blue-500'}`} to={'/dashboard/add-job'}>
+            <NavLink className={({ isActive }) => ` flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${isActive && 'bg-blue-100 border-r-4 border-blue-500'}`} to={'/dashboard/add-car'}>
               <img className='min-w-4' src={assets.add_icon} alt="" />
-              <p className='max-sm:hidden'>Add Job</p>
+              <p className='max-sm:hidden'>Add Your Car</p>
             </NavLink>
 
-            <NavLink className={({ isActive }) => ` flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${isActive && 'bg-blue-100 border-r-4 border-blue-500'}`} to={'/dashboard/manage-jobs'}>
+            <NavLink className={({ isActive }) => ` flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${isActive && 'bg-blue-100 border-r-4 border-blue-500'}`} to={'/dashboard/manage-cars'}>
               <img className='min-w-4' src={assets.home_icon} alt="" />
-              <p className='max-sm:hidden'>Manage Jobs</p>
+              <p className='max-sm:hidden'>Manage Cars</p>
             </NavLink>
 
             <NavLink className={({ isActive }) => ` flex items-center p-3 sm:px-6 gap-2 w-full hover:bg-gray-100 ${isActive && 'bg-blue-100 border-r-4 border-blue-500'}`} to={'/dashboard/view-applications'}>

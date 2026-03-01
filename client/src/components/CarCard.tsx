@@ -5,9 +5,10 @@ type Car = {
   id: number;
   title: string;
   category: string;
+  condition: string;
   location: string;
-  price_usd: number;
-  img: string;
+  price: number;
+  image: string;
 };
 
 type CarCardProps = {
@@ -20,7 +21,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
   return (
     <div className="border p-6 shadow rounded">
       <div className="flex justify-between items-center">
-        <img className="h-20 rounded" src={car.img} alt={car.title} />
+        <img className="h-20 rounded" src={car.image} alt={car.title} />
       </div>
 
       <h4 className="font-medium text-xl mt-2">{car.title}</h4>
@@ -35,7 +36,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
       </div>
 
       <p className="text-gray-500 text-sm mt-4">
-        Price: <span className="font-semibold">${car.price_usd}</span>
+        Price: <span className="font-semibold">${car.price}</span>
       </p>
 
       <div className="mt-4 flex gap-4 text-sm">
