@@ -67,7 +67,7 @@ const ManageCars = () => {
 
   return cars ? cars.length === 0 ? (
   <div className='flex items-center justify-center h-[70vh]'>
-    <p className='text-xl sm:text-2xl'>No jobs available or posted</p>
+    <p className='text-xl sm:text-2xl'>No cars available or posted</p>
   </div> ) : (
     <div className='container p-4 max-w-5xl'>
       <div className='overflow-x-auto'>
