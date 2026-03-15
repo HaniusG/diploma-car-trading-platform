@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
-import Company from '../models/Company.js'
+import User from '../models/User.js'
 
-export const protectCompany = async (req, res, next) => {
+export const protectSeller = async (req, res, next) => {
   
   const token = req.headers.token
 
@@ -13,7 +13,7 @@ export const protectCompany = async (req, res, next) => {
     
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-    req.company = await Company.findById(decoded.id).select('-password')
+    req.seller = await User.findById(decoded.id).select('-password')
 
     next()
 

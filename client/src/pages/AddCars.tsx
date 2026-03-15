@@ -14,7 +14,7 @@ const AddJobs = () => {
   const [price, setPrice] = useState<number>(0);
   const [image, setImage] = useState<File | null>(null)
 
-  const { backendUrl, companyToken } = useContext(AppContext)
+  const { backendUrl, sellerToken } = useContext(AppContext)
 
   const editorRef = useRef<any>(null)
   const quillRef = useRef<any>(null)
@@ -38,9 +38,9 @@ const AddJobs = () => {
         formData.append('image', image)
       }
 
-      const { data } = await axios.post(backendUrl + '/api/company/post-car',
+      const { data } = await axios.post(backendUrl + '/api/seller/post-car',
         formData,
-        { headers: { token: companyToken } }
+        { headers: { token: sellerToken } }
       )
 
       if (data.success) {

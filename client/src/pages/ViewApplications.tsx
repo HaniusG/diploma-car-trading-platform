@@ -7,17 +7,17 @@ import { toast } from 'react-toastify';
 
 const ViewApplications = () => {
 
- const { backendUrl, companyToken } = useContext(AppContext)
+ const { backendUrl, sellerToken } = useContext(AppContext)
 
   const [applicants, setApplicants] = useState<any>(false)
 
-  // Function to fetch company Job Applications data 
-  const fetchCompanyJobApplications = async () => {
+  // Function to fetch seller Job Applications data 
+  const fetchSellerJobApplications = async () => {
 
     try {
 
-      const { data } = await axios.get(backendUrl + '/api/company/applicants',
-        { headers: { token: companyToken } }
+      const { data } = await axios.get(backendUrl + '/api/seller/applicants',
+        { headers: { token: sellerToken } }
       )
 
       if (data.success) {
@@ -35,13 +35,13 @@ const ViewApplications = () => {
   // Function to update application status
   const changeJobApplicationStatus = async (id: any, status: string) => {
     try {
-      const {data} = await axios.post(backendUrl+'/api/company/change-status', 
+      const {data} = await axios.post(backendUrl+'/api/seller/change-status', 
         {id, status},
-        {headers: {token: companyToken}}
+        {headers: {token: sellerToken}}
       )
 
       if (data.success) {
-        fetchCompanyJobApplications()
+        fetchSellerJobApplications()
       } else {
         toast.error(data.message)
       }
@@ -51,11 +51,11 @@ const ViewApplications = () => {
   }
 
   useEffect(() => {
-    if (companyToken) {
-      fetchCompanyJobApplications()
+    if (sellerToken) {
+      fetchSellerJobApplications()
     }
 
-  }, [companyToken])
+  }, [sellerToken])
   
 
   return applicants ? applicants.length === 0 ? (

@@ -13,12 +13,12 @@ const ManageCars = () => {
 
   const [cars, setCars] = useState<any>(false)
 
-  const { backendUrl, companyToken } = useContext(AppContext)
+  const { backendUrl, sellerToken } = useContext(AppContext)
   // Funtion to fetch compnay Job Application data
-  const fetchCompanyCars = async () => {
+  const fetchSellerCars = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/company/list-cars',
-        { headers: { token: companyToken } }
+      const { data } = await axios.get(backendUrl + '/api/seller/list-cars',
+        { headers: { token: sellerToken } }
       )
 
       if (data.success) {
@@ -39,14 +39,14 @@ const ManageCars = () => {
 
     try {
 
-      const { data } = await axios.post(backendUrl + '/api/company/change-visibility',
+      const { data } = await axios.post(backendUrl + '/api/seller/change-visibility',
         { id },
-        { headers: { token: companyToken } }
+        { headers: { token: sellerToken } }
       )
 
       if (data.success) {
         toast.success(data.message)
-        fetchCompanyCars()
+        fetchSellerCars()
       } else {
         toast.error(data.message)
       }
@@ -59,11 +59,11 @@ const ManageCars = () => {
   }
 
   useEffect(() => {
-    if (companyToken) {
-      fetchCompanyCars()
+    if (sellerToken) {
+      fetchSellerCars()
     }
 
-  }, [companyToken])
+  }, [sellerToken])
 
   return cars ? cars.length === 0 ? (
   <div className='flex items-center justify-center h-[70vh]'>

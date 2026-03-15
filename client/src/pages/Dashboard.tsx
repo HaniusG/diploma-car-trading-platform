@@ -7,21 +7,21 @@ const Dashboard = () => {
 
   const navigate = useNavigate()
 
-  const { companyData, setCompanyData, setCompanyToken } = useContext(AppContext)
+  const { sellerData, setSellerData, setSellerToken } = useContext(AppContext)
 
-  // Function to logout for company
+  // Function to logout for seller
   const logout = () => {
-    setCompanyToken(null)
-    localStorage.removeItem('companyToken')
-    setCompanyData(null)
+    setSellerToken(null)
+    localStorage.removeItem('sellerToken')
+    setSellerData(null)
     navigate('/')
   }
 
   useEffect(() => {
-    if (companyData) {
+    if (sellerData) {
       navigate('/dashboard/manage-cars')
     }
-  }, [companyData])
+  }, [sellerData])
 
   return (
     <div className='min-h-screen'>
@@ -33,11 +33,11 @@ const Dashboard = () => {
             <img onClick={() => navigate('/')} className='-mr-[6px] cursor-pointer w-14' src={assets.logo} alt="AutoMarket logo" />
             <span className='font-bold text-2xl'>Auto<span className='font-normal'>Market</span></span>
           </div>
-          {companyData &&
+          {sellerData &&
             <div className='flex items-center gap-3'>
-              <p className='max-sm:hidden'>Welcome, {companyData.name}</p>
+              <p className='max-sm:hidden'>Welcome, {sellerData.name}</p>
               <div className='relative group'>
-                <img className='w-8 border rounded-full' src={companyData.image} alt="" />
+                <img className='w-8 border rounded-full' src={sellerData.image} alt="" />
                 <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12'>
                   <ul className='list-none m-0 p-2 bg-white rounded-md border text-sm'>
                     <li onClick={logout} className='py-1 px-2 cursor-pointer pr-10'>Logout</li>

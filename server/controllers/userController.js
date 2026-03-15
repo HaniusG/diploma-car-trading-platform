@@ -41,7 +41,7 @@ export const applyForJob = async(req, res) => {
     }
 
     await CarApplication.create({
-      companyId: jobData.companyId,
+      sellerId: jobData.sellerId,
       userId,
       jobId,
       date: Date.now()
@@ -60,7 +60,7 @@ export const getUserJobApplications = async (req, res) => {
     const userId = req.auth().userId
     
     const applications = await CarApplication.find({userId})
-    .populate('companyId', 'name email image')
+    .populate('sellerId', 'name email image')
     .populate('jobId', 'title description location category level salary')
     .exec()
 

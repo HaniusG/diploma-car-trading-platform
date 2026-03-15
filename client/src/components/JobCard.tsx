@@ -11,7 +11,7 @@ type Job = {
   level: string;
   visible: boolean;
   date: number;
-  companyId: {
+  sellerId: {
     _id: string;
     name: string;
     email: string;
@@ -34,7 +34,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   return (
     <div className='border p-6 shadow rounded'>
       <div className='flex justify-between items-center'>
-        <img className='h-8' src={job.companyId.image} alt="" />
+        <img className='h-8' src={job.sellerId.image} alt="" />
       </div>
       <h4 className='font-medium text-xl mt-2'>{job.title}</h4>
       <div className='flex items-center gap-3 mt-2 text-xs'>

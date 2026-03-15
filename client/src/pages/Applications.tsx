@@ -84,7 +84,7 @@ const Applications = () => {
         <table className='min-w-full bg-white border rounded-lg'>
           <thead>
             <tr>
-              <th className='py-3 px-4 border-b text-left'>Company</th>
+              <th className='py-3 px-4 border-b text-left'>Seller</th>
               <th className='py-3 px-4 border-b text-left'>Job Title</th>
               <th className='py-3 px-4 border-b text-left max-sm:hidden'>Location</th>
               <th className='py-3 px-4 border-b text-left max-sm:hidden'>Date</th>
@@ -95,8 +95,8 @@ const Applications = () => {
             {userApplications.map((job: any, index: number) => true ? (
               <tr key={index}>
                 <td className='py-3 px-4 flex items-center gap-2 border-b'>
-                  <img className='w-8 h-8' src={job.companyId.image} alt="" />
-                  {job.companyId.name}
+                  <img className='w-8 h-8' src={job.sellerId.image} alt="" />
+                  {job.sellerId.name}
                 </td>
                 <td className='py-2 px-4 border-b'>{job.jobId.title}</td>
                 <td className='py-2 px-4 border-b max-sm:hidden'>{job.jobId.location}</td>

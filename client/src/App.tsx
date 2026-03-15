@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import ApplyJob from './pages/ApplyJob'
 import Applications from './pages/Applications'
-import RecruiterLogin from './components/RecruiterLogin'
+import RecruiterLogin from './components/SellerLogin'
 import { AppContext } from './context/AppContext'
 import Dashboard from './pages/Dashboard'
 import AddCars from './pages/AddCars'
@@ -14,7 +14,7 @@ import { ToastContainer} from 'react-toastify';
 
 const App = () => {
 
-  const { showRecruiterLogin, companyToken } = useContext(AppContext)
+  const { showRecruiterLogin, sellerToken } = useContext(AppContext)
 
   return (
     <div>
@@ -25,7 +25,7 @@ const App = () => {
         <Route path='/apply-job/:id' element={<ApplyJob />} />
         <Route path='/applications' element={<Applications />} />
         <Route path='/dashboard' element={<Dashboard />}>
-          {companyToken ? <>
+          {sellerToken ? <>
             <Route path='add-car' element={<AddCars />} />
             <Route path='manage-cars' element={<ManageCars />} />
             <Route path='view-applications' element={<ViewApplications />} />

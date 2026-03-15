@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-const RecruiterLogin = () => {
+const SellerLogin = () => {
 
   const navigate = useNavigate()
 
@@ -19,7 +19,7 @@ const RecruiterLogin = () => {
 
   const [isTextDataSubmited, setIsTextDataSubmited] = useState(false)
 
-  const { setShowRecruiterLogin, backendUrl, setCompanyToken, setCompanyData } = useContext(AppContext)
+  const { setShowRecruiterLogin, backendUrl, setSellerToken, setSellerData } = useContext(AppContext)
 
   const onSubmitHandler = async (e: any) => {
     e.preventDefault()
@@ -30,12 +30,12 @@ const RecruiterLogin = () => {
 
     try {
       if (state === "Login") {
-        const {data} = await axios.post(backendUrl + '/api/company/login', {email, password})
+        const {data} = await axios.post(backendUrl + '/api/seller/login', {email, password})
       
         if (data.success) {
-          setCompanyData(data.company)
-          setCompanyToken(data.token)
-          localStorage.setItem('companyToken', data.token)
+          setSellerData(data.seller)
+          setSellerToken(data.token)
+          localStorage.setItem('sellerToken', data.token)
           setShowRecruiterLogin(false)
           navigate('/dashboard')
         } else {
@@ -47,17 +47,18 @@ const RecruiterLogin = () => {
         formData.append('password', password)
         formData.append('email', email)
         formData.append('image', image)
+        formData.append('role', 'seller')
         console.log(image);
         
         
         console.log(formData.getAll(name));
         
-        const {data} = await axios.post(backendUrl+'/api/company/register', formData)
+        const {data} = await axios.post(backendUrl+'/api/seller/register', formData)
 
         if (data.success) {
-          setCompanyData(data.company)
-          setCompanyToken(data.token)
-          localStorage.setItem('companyToken', data.token)
+          setSellerData(data.seller)
+          setSellerToken(data.token)
+          localStorage.setItem('sellerToken', data.token)
           setShowRecruiterLogin(false)
           navigate('/dashboard')
         } else {
@@ -90,7 +91,7 @@ const RecruiterLogin = () => {
                 <img className='w-16 rounded-full' src={image ? URL.createObjectURL(image) : assets.upload_area} alt="" />
                 <input onChange={(e:any) => setImage(e.target.files[0])} type="file" id='image' hidden />
               </label>
-              <p>Upload Company <br /> logo</p>
+              <p>Upload Your <br /> logo</p>
             </div>
           </>
           :
@@ -98,7 +99,7 @@ const RecruiterLogin = () => {
             {state !== 'Login' && (
               <div className='border px-4 py-2 flex items-center gap-2 rounded-full mt-5'>
                 <img src={assets.person_icon} alt="" />
-                <input className='outline-none text-sm' onChange={e => setName(e.target.value)} value={name} type="text" placeholder='Company Name' required />
+                <input className='outline-none text-sm' onChange={e => setName(e.target.value)} value={name} type="text" placeholder='Your Name' required />
               </div>)}
 
 
@@ -136,4 +137,4 @@ const RecruiterLogin = () => {
   )
 }
 
-export default RecruiterLogin
+export default SellerLogin

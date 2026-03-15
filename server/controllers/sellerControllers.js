@@ -1,4 +1,4 @@
-import Company from "../models/Company.js";
+import User from "../models/User.js";
 import bcrypt from 'bcrypt'
 import { v2 as cloudinary } from "cloudinary";
 import generateToken from "../utils/generateToken.js";
@@ -6,10 +6,10 @@ import Car from "../models/Car.js";
 import CarApplication from "../models/CarApplication.js";
 
 
-// Register a new company
-export const registerCompany = async (req, res) => {
+// Register a new user
+export const registerUser = async (req, res) => {
 
-  const { name, email, password } = req.body
+  const { name, email, password, role } = req.body
 
   const imageFile = req.file;
 
@@ -18,10 +18,10 @@ export const registerCompany = async (req, res) => {
   }
 
   try {
-    const companyExist = await Company.findOne({ email })
+    const userExist = await User.findOne({ email })
 
-    if (companyExist) {
-      return res.json({ success: false, message: 'Company already registered' })
+    if (userExist) {
+      return res.json({ success: false, message: 'User already registered' })
     }
 
     const salt = await bcrypt.genSalt(10)
@@ -29,22 +29,24 @@ export const registerCompany = async (req, res) => {
 
     const imageUpload = await cloudinary.uploader.upload(imageFile.path)
 
-    const company = await Company.create({
+    const user = await User.create({
       name,
       email,
+      role,
       password: hashPassword,
       image: imageUpload.secure_url
     })
 
     res.json({
       success: true,
-      company: {
-        _id: company._id,
-        name: company.name,
-        email: company.email,
-        image: company.image
+     user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        role: user.role
       },
-      token: generateToken(company._id)
+      token: generateToken(user._id)
     })
 
   } catch (error) {
@@ -54,25 +56,25 @@ export const registerCompany = async (req, res) => {
 
 }
 
-// Company login
-export const loginCompany = async (req, res) => {
+// Seller login
+export const loginSeller = async (req, res) => {
 
   const { email, password } = req.body
 
   try {
-    const company = await Company.findOne({ email })
+    const seller = await User.findOne({ email })
 
-    if (await bcrypt.compare(password, company.password)) {
+    if (await bcrypt.compare(password, seller.password)) {
 
       res.json({
         success: true,
-        company: {
-          _id: company._id,
-          name: company.name,
-          email: company.email,
-          image: company.image
+        seller: {
+          _id: seller._id,
+          name: seller.name,
+          email: seller.email,
+          image: seller.image
         },
-        token: generateToken(company._id)
+        token: generateToken(seller._id)
       })
 
     } else {
@@ -84,24 +86,24 @@ export const loginCompany = async (req, res) => {
   }
 }
 
-// Get company data 
-export const getCompanyData = async (req, res) => {
+// Get user data 
+export const getSellerData = async (req, res) => {
   try {
-    const company = req.company
-    res.json({ success: true, company })
+    const seller = req.seller
+    res.json({ success: true, seller })
   } catch (error) {
-    res.json({ success: message, message: error.message })
+    res.json({ success: false, message: error.message })
   }
 }
 
-// Post a new job
-import uploadImageToCloudinary from "..//utils/cloudinaryUploader.js"
+// Post a new car
+import uploadImageToCloudinary from "../utils/cloudinaryUploader.js"
 
 export const postCar = async (req, res) => {
   try {
 
     const { title, description, location, price, condition, category } = req.body
-    const companyId = req.company._id
+    const sellerId = req.seller._id
 
     if (!req.file) {
       return res.json({ success: false, message: "Image is required" })
@@ -115,7 +117,7 @@ export const postCar = async (req, res) => {
       description,
       location,
       price,
-      companyId,
+      sellerId,
       image: uploadResult.secure_url,
       date: Date.now(),
       condition,
@@ -131,14 +133,14 @@ export const postCar = async (req, res) => {
   }
 }
 
-// Get company job applicant
-export const getCompanyJobApplicants = async (req, res) => {
+// Get seller car applicant
+export const getSellerJobApplicants = async (req, res) => {
   try {
 
-    const companyId = req.company._id
+    const sellerId = req.seller._id
 
-    // Find job applications for the user and populate related data
-    const applications = await CarApplication.find({ companyId })
+    // Find car applications for the user and populate related data
+    const applications = await CarApplication.find({ sellerId })
       .populate('userId', 'name image resume')
       .populate('jobId', 'title location category level salary')
       .exec()
@@ -150,11 +152,11 @@ export const getCompanyJobApplicants = async (req, res) => {
   }
 }
 
-// Get Company Posted Jobs
-export const getCompanyPostedCars = async (req, res) => {
+// Get seller Posted cars
+export const getSellerPostedCars = async (req, res) => {
   try {
-    const companyId = req.company._id
-    const cars = await Car.find({ companyId })
+    const sellerId = req.seller._id
+    const cars = await Car.find({ sellerId })
 
     // Adding No. of applicants info
     const carsData = await Promise.all(cars.map(async (car) => {
@@ -169,14 +171,14 @@ export const getCompanyPostedCars = async (req, res) => {
   }
 }
 
-// Change Job Application Status
+// Change car Application Status
 export const changeJobApplicationStatus = async (req, res) => {
 
   try {
     const { id, status } = req.body
 
-    // Find job application data and update status
-    await Application.findOneAndUpdate({ _id: id }, { status })
+    // Find car application data and update status
+    await CarApplication.findOneAndUpdate({ _id: id }, { status })
     res.json({ success: true, message: 'Status changed' })
 
   } catch (error) {
@@ -187,14 +189,14 @@ export const changeJobApplicationStatus = async (req, res) => {
 
 }
 
-// Change job visibility
+// Change car visibility
 export const changeVisibility = async (req, res) => {
   try {
     const { id } = req.body
-    const companyId = req.company._id
+    const sellerId = req.seller._id
     const car = await Car.findById(id)
 
-    if (companyId.toString() === car.companyId.toString()) {
+    if (sellerId.toString() === car.sellerId.toString()) {
       car.visible = !car.visible
     }
 

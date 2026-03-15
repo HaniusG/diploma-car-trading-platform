@@ -5,7 +5,7 @@ import 'dotenv/config'
 import connectDB from './config/db.js'
 import * as Sentry from "@sentry/node";
 import { clerkWebhooks } from './controllers/webhooks.js'
-import copmanyRoutes from './routes/companyRoutes.js'
+import sellerRoutes from './routes/sellerRoutes.js'
 import connectCloudinary from './config/cloudinary.js'
 import carRoutes from './routes/carRoutes.js'
 import userRoutes from './routes/userRoutes.js'
@@ -30,7 +30,7 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 });
 // Webhook route needs raw body for signature verification
 app.post('/webhooks', express.raw({ type: 'application/json' }), clerkWebhooks)
-app.use('/api/company', copmanyRoutes)
+app.use('/api/seller', sellerRoutes)
 app.use('/api/cars', carRoutes)
 app.use('/api/users', userRoutes)
 

@@ -10,7 +10,7 @@ const carSchema = new mongoose.Schema({
   image: { type: String, required: true },
   date: {type: Number, required: true},
   visible: {type: Boolean, default: true},
-  companyId: {type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true},
+  sellerId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
 })
 
 const Car = mongoose.model('Car', carSchema)

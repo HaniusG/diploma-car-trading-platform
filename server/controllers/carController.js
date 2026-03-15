@@ -6,7 +6,7 @@ import Car from "../models/Car.js"
 export const getCars = async (req, res) => {
   try {
     const cars = await Car.find({visible: true})
-    .populate({path:'companyId', select:'-password'})
+    .populate({path:'sellerId', select:'-password'})
 
     res.json({success: true, cars})
   } catch (error) {
@@ -20,7 +20,7 @@ export const getCarById = async (req, res) => {
     const {id} = req.params
 
     const job = await Car.findById(id)
-    .populate({path: 'companyId', select:'-password'})
+    .populate({path: 'sellerId', select:'-password'})
 
     if (!job) {
       return res.json({

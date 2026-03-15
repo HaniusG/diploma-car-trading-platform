@@ -96,7 +96,7 @@ const cars = [
 
 
 
-type Company = {
+type Seller = {
   _id: string;
   name: string;
   email: string;
@@ -114,7 +114,7 @@ type Company = {
   level: string;
   visible: boolean;
   date: number;
-  companyId: string | Company;
+  sellerId: string | Seller;
   __v: number;
 };
 
@@ -130,7 +130,7 @@ export type UserProfile = {
 export type UserApplication = {
   _id: string;
   userId: string;
-  companyId: {
+  sellerId: {
     _id: string;
     name: string;
     email: string;
@@ -172,8 +172,8 @@ export const AppContextProvider = (props: any) => {
 
   const [showRecruiterLogin, setShowRecruiterLogin] = useState<boolean>(false)
 
-  const [companyToken, setCompanyToken] = useState(null)
-  const [companyData, setCompanyData] = useState(null)
+  const [sellerToken, setSellerToken] = useState(null)
+  const [sellerData, setSellerData] = useState(null)
 
   const [userData, setUserData] = useState<UserProfile | null>(null)
   const [userApplications, setUserApplications] = useState<UserApplication[]>([])
@@ -195,13 +195,13 @@ export const AppContextProvider = (props: any) => {
     }
   }
 
-  // Function to fetch company data
-  const fetchCompanyData = async () => {
+  // Function to fetch seller data
+  const fetchSellerData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/company/company', { headers: { token: companyToken } })
+      const { data } = await axios.get(backendUrl + '/api/seller/seller', { headers: { token: sellerToken } })
 
       if (data.success) {
-        setCompanyData(data.company)
+        setSellerData(data.seller)
       } else {
         toast.error(data.message)
       }
@@ -250,19 +250,19 @@ export const AppContextProvider = (props: any) => {
   useEffect(() => {
     fetchCars();
 
-    const storedCompanyToken: any = localStorage.getItem('companyToken')
+    const storedSellerToken: any = localStorage.getItem('sellerToken')
 
-    if (storedCompanyToken) {
-      setCompanyToken(storedCompanyToken)
+    if (storedSellerToken) {
+      setSellerToken(storedSellerToken)
     }
 
   }, [])
 
   useEffect(() => {
-    if (companyToken) {
-      fetchCompanyData()
+    if (sellerToken) {
+      fetchSellerData()
     }
-  }, [companyToken])
+  }, [sellerToken])
 
   useEffect(() => {
     if (user) {
@@ -276,8 +276,8 @@ export const AppContextProvider = (props: any) => {
     isSearched, setIsSearched,
     cars, setCars,
     showRecruiterLogin, setShowRecruiterLogin,
-    companyToken, setCompanyToken,
-    companyData, setCompanyData,
+    sellerToken, setSellerToken,
+    sellerData, setSellerData,
     backendUrl,
     userData, setUserData,
     userApplications, setUserApplications,

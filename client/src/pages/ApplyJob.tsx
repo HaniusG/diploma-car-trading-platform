@@ -95,13 +95,13 @@ const ApplyJobs = () => {
         <div className='bg-white text-black rounded-lg w-ful'>
           <div className='flex justify-center md:justify-between flex-wrap gap-8 px-14 py-20  mb-6 bg-sky-50 border border-sky-400 rounded-xl'>
             <div className='flex flex-col md:flex-row items-center'>
-              <img className='h-24 bg-white rounded-lg p-4 mr-4 max-md:mb-4 border' src={jobData.companyId.image} alt="" />
+              <img className='h-24 bg-white rounded-lg p-4 mr-4 max-md:mb-4 border' src={jobData.sellerId.image} alt="" />
               <div className='text-center md:text-left text-neutral-700'>
                 <h1 className='text-2xl sm:text-4xl font-medium'>{jobData.title}</h1>
                 <div className='flex flex-row flex-wrap max-md:justify-center gap-y-2 gap-6 items-center text-gray-600 mt-2'>
                   <span className='flex items-center gap-1'>
                     <img src={assets.suitcase_icon} alt="" />
-                    {jobData.companyId.name}
+                    {jobData.sellerId.name}
                   </span>
                   <span className='flex items-center gap-1'>
                     <img src={assets.location_icon} alt="" />
@@ -134,8 +134,8 @@ const ApplyJobs = () => {
             </div>
             {/* Right Section More Jobs */}
             <div className='w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5'>
-              <h2>More jobs from {jobData.companyId.name}</h2>
-              {jobs.filter((job: any) => job._id !== jobData._id && job.companyId._id === jobData.companyId._id)
+              <h2>More jobs from {jobData.sellerId.name}</h2>
+              {jobs.filter((job: any) => job._id !== jobData._id && job.sellerId._id === jobData.sellerId._id)
                 .filter((job: any) => {
                   // Applied jobs id's
                   const appliedJobsIds = new Set(userApplications.map((app: any) => app.jobId && app.jobId._id))
