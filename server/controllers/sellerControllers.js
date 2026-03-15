@@ -57,24 +57,25 @@ export const registerUser = async (req, res) => {
 }
 
 // Seller login
-export const loginSeller = async (req, res) => {
+export const loginUser = async (req, res) => {
 
   const { email, password } = req.body
 
   try {
-    const seller = await User.findOne({ email })
+    const user = await User.findOne({ email })
 
-    if (await bcrypt.compare(password, seller.password)) {
+    if (await bcrypt.compare(password, user.password)) {
 
       res.json({
         success: true,
-        seller: {
-          _id: seller._id,
-          name: seller.name,
-          email: seller.email,
-          image: seller.image
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          role: user.role,
         },
-        token: generateToken(seller._id)
+        token: generateToken(user._id)
       })
 
     } else {
@@ -87,10 +88,10 @@ export const loginSeller = async (req, res) => {
 }
 
 // Get user data 
-export const getSellerData = async (req, res) => {
+export const getUserData = async (req, res) => {
   try {
-    const seller = req.seller
-    res.json({ success: true, seller })
+    const user = req.user
+    res.json({ success: true, user })
   } catch (error) {
     res.json({ success: false, message: error.message })
   }
@@ -103,7 +104,7 @@ export const postCar = async (req, res) => {
   try {
 
     const { title, description, location, price, condition, category } = req.body
-    const sellerId = req.seller._id
+    const sellerId = req.user._id
 
     if (!req.file) {
       return res.json({ success: false, message: "Image is required" })
@@ -134,10 +135,10 @@ export const postCar = async (req, res) => {
 }
 
 // Get seller car applicant
-export const getSellerJobApplicants = async (req, res) => {
+export const getSellerCarApplicants = async (req, res) => {
   try {
 
-    const sellerId = req.seller._id
+    const sellerId = req.user._id
 
     // Find car applications for the user and populate related data
     const applications = await CarApplication.find({ sellerId })
@@ -155,7 +156,7 @@ export const getSellerJobApplicants = async (req, res) => {
 // Get seller Posted cars
 export const getSellerPostedCars = async (req, res) => {
   try {
-    const sellerId = req.seller._id
+    const sellerId = req.user._id
     const cars = await Car.find({ sellerId })
 
     // Adding No. of applicants info
@@ -193,7 +194,7 @@ export const changeJobApplicationStatus = async (req, res) => {
 export const changeVisibility = async (req, res) => {
   try {
     const { id } = req.body
-    const sellerId = req.seller._id
+    const sellerId = req.user._id
     const car = await Car.findById(id)
 
     if (sellerId.toString() === car.sellerId.toString()) {

@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-const SellerLogin = () => {
+const UserLogin = () => {
 
   const navigate = useNavigate()
 
@@ -19,7 +19,7 @@ const SellerLogin = () => {
 
   const [isTextDataSubmited, setIsTextDataSubmited] = useState(false)
 
-  const { setShowRecruiterLogin, backendUrl, setSellerToken, setSellerData } = useContext(AppContext)
+  const { setShowLogin, backendUrl, setUserToken, setUserData, role } = useContext(AppContext)
 
   const onSubmitHandler = async (e: any) => {
     e.preventDefault()
@@ -33,10 +33,10 @@ const SellerLogin = () => {
         const {data} = await axios.post(backendUrl + '/api/seller/login', {email, password})
       
         if (data.success) {
-          setSellerData(data.seller)
-          setSellerToken(data.token)
-          localStorage.setItem('sellerToken', data.token)
-          setShowRecruiterLogin(false)
+          setUserData(data.user)
+          setUserToken(data.token)
+          localStorage.setItem('userToken', data.token)
+          setShowLogin(false)
           navigate('/dashboard')
         } else {
           toast.error(data.message)
@@ -47,7 +47,7 @@ const SellerLogin = () => {
         formData.append('password', password)
         formData.append('email', email)
         formData.append('image', image)
-        formData.append('role', 'seller')
+        formData.append('role', role)
         console.log(image);
         
         
@@ -56,10 +56,10 @@ const SellerLogin = () => {
         const {data} = await axios.post(backendUrl+'/api/seller/register', formData)
 
         if (data.success) {
-          setSellerData(data.seller)
-          setSellerToken(data.token)
-          localStorage.setItem('sellerToken', data.token)
-          setShowRecruiterLogin(false)
+          setUserData(data.user)
+          setUserToken(data.token)
+          localStorage.setItem('userToken', data.token)
+          setShowLogin(false)
           navigate('/dashboard')
         } else {
           toast.error(data.message)
@@ -82,7 +82,7 @@ const SellerLogin = () => {
   return (
     <div className='absolute top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center'>
       <form onSubmit={onSubmitHandler} className='relative bg-white p-10 rounded-xl text-slate-500'>
-        <h1 className='text-center text-2xl text-neutral-700 font-medium'>Seller {state}</h1>
+        <h1 className='text-center text-2xl text-neutral-700 font-medium'>{role === 'seller' ? 'Seller' : 'Buyer'} {state}</h1>
         <p className='text-sm'>Welcome back! Please sign in to continue</p>
         {state === 'Sign Up' && isTextDataSubmited
           ? <>
@@ -129,7 +129,7 @@ const SellerLogin = () => {
             : <p className='mt-5 text-center'>Already have an account? <span className='text-blue-600 cursor-pointer' onClick={() => setState("Login")}>Login</span></p>
         }
 
-        <img onClick={() => setShowRecruiterLogin(false)} className='absolute top-5 right-5 cursor-pointer' src={assets.cross_icon} alt="X" />
+        <img onClick={() => setShowLogin(false)} className='absolute top-5 right-5 cursor-pointer' src={assets.cross_icon} alt="X" />
       </form>
 
 
@@ -137,4 +137,4 @@ const SellerLogin = () => {
   )
 }
 
-export default SellerLogin
+export default UserLogin

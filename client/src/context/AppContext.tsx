@@ -167,17 +167,13 @@ export const AppContextProvider = (props: any) => {
   });
 
   const [isSearched, setIsSearched] = useState<boolean>(false)
-
   const [cars, setCars] = useState<any>([])
-
-  const [showRecruiterLogin, setShowRecruiterLogin] = useState<boolean>(false)
-
-  const [sellerToken, setSellerToken] = useState(null)
-  const [sellerData, setSellerData] = useState(null)
-
-  const [userData, setUserData] = useState<UserProfile | null>(null)
-  const [userApplications, setUserApplications] = useState<UserApplication[]>([])
-
+  const [showLogin, setShowLogin] = useState<boolean>(false)
+  const [userToken, setUserToken] = useState(null)
+  const [userData, setUserData] = useState(null)
+  // const [userData, setUserData] = useState<UserProfile | null>(null)
+  const [buyerApplications, setBuyerApplications] = useState<UserApplication[]>([])
+  const [role, setRole] = useState<string>('')
 
   //Function fetching car data
   const fetchCars = async () => {
@@ -196,12 +192,12 @@ export const AppContextProvider = (props: any) => {
   }
 
   // Function to fetch seller data
-  const fetchSellerData = async () => {
+  const fetchUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/seller/seller', { headers: { token: sellerToken } })
+      const { data } = await axios.get(backendUrl + '/api/seller/seller', { headers: { token: userToken } })
 
       if (data.success) {
-        setSellerData(data.seller)
+        setUserData(data.user)
       } else {
         toast.error(data.message)
       }
@@ -212,7 +208,7 @@ export const AppContextProvider = (props: any) => {
   }
 
   // Function  to fetch user data
-  const fetchUserData = async () => {
+  const fetchBuyerData = async () => {
     try {
       const token = await getToken()
       const { data } = await axios.get(backendUrl + '/api/users/user',
@@ -229,7 +225,7 @@ export const AppContextProvider = (props: any) => {
   }
 
   // Funtion to fetch user's applied applications
-  const fetchUserApplications = async () => {
+  const fetchBuyerApplications = async () => {
     try {
       const token = await getToken()
 
@@ -238,7 +234,7 @@ export const AppContextProvider = (props: any) => {
       )
 
       if (data.success) {
-        setUserApplications(data.applications)
+        setBuyerApplications(data.applications)
       } else {
         toast.error(data.message)
       }
@@ -250,24 +246,24 @@ export const AppContextProvider = (props: any) => {
   useEffect(() => {
     fetchCars();
 
-    const storedSellerToken: any = localStorage.getItem('sellerToken')
+    const storedUserToken: any = localStorage.getItem('userToken')
 
-    if (storedSellerToken) {
-      setSellerToken(storedSellerToken)
+    if (storedUserToken) {
+      setUserToken(storedUserToken)
     }
 
   }, [])
 
   useEffect(() => {
-    if (sellerToken) {
-      fetchSellerData()
+    if (userToken) {
+      fetchUserData()
     }
-  }, [sellerToken])
+  }, [userToken])
 
   useEffect(() => {
     if (user) {
       fetchUserData()
-      fetchUserApplications()
+      fetchBuyerApplications()
     }
   }, [user])
 
@@ -275,14 +271,15 @@ export const AppContextProvider = (props: any) => {
     searchFilter, setSearchFilter,
     isSearched, setIsSearched,
     cars, setCars,
-    showRecruiterLogin, setShowRecruiterLogin,
-    sellerToken, setSellerToken,
-    sellerData, setSellerData,
-    backendUrl,
+    showLogin, setShowLogin,
+    userToken, setUserToken,
     userData, setUserData,
-    userApplications, setUserApplications,
+    backendUrl,
+    // userData, setUserData,
+    buyerApplications, setBuyerApplications,
+    role, setRole,
     fetchUserData,
-    fetchUserApplications,
+    fetchBuyerApplications,
   }
 
   return (

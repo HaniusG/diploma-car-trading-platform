@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const ViewApplications = () => {
 
- const { backendUrl, sellerToken } = useContext(AppContext)
+ const { backendUrl, userToken } = useContext(AppContext)
 
   const [applicants, setApplicants] = useState<any>(false)
 
@@ -17,7 +17,7 @@ const ViewApplications = () => {
     try {
 
       const { data } = await axios.get(backendUrl + '/api/seller/applicants',
-        { headers: { token: sellerToken } }
+        { headers: { token: userToken } }
       )
 
       if (data.success) {
@@ -37,7 +37,7 @@ const ViewApplications = () => {
     try {
       const {data} = await axios.post(backendUrl+'/api/seller/change-status', 
         {id, status},
-        {headers: {token: sellerToken}}
+        {headers: {token: userToken}}
       )
 
       if (data.success) {
@@ -51,11 +51,11 @@ const ViewApplications = () => {
   }
 
   useEffect(() => {
-    if (sellerToken) {
+    if (userToken) {
       fetchSellerJobApplications()
     }
 
-  }, [sellerToken])
+  }, [userToken])
   
 
   return applicants ? applicants.length === 0 ? (

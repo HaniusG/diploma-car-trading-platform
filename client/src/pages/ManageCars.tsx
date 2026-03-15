@@ -13,12 +13,12 @@ const ManageCars = () => {
 
   const [cars, setCars] = useState<any>(false)
 
-  const { backendUrl, sellerToken } = useContext(AppContext)
+  const { backendUrl, userToken } = useContext(AppContext)
   // Funtion to fetch compnay Job Application data
   const fetchSellerCars = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/seller/list-cars',
-        { headers: { token: sellerToken } }
+        { headers: { token: userToken } }
       )
 
       if (data.success) {
@@ -41,7 +41,7 @@ const ManageCars = () => {
 
       const { data } = await axios.post(backendUrl + '/api/seller/change-visibility',
         { id },
-        { headers: { token: sellerToken } }
+        { headers: { token: userToken } }
       )
 
       if (data.success) {
@@ -59,11 +59,11 @@ const ManageCars = () => {
   }
 
   useEffect(() => {
-    if (sellerToken) {
+    if (userToken) {
       fetchSellerCars()
     }
 
-  }, [sellerToken])
+  }, [userToken])
 
   return cars ? cars.length === 0 ? (
   <div className='flex items-center justify-center h-[70vh]'>
