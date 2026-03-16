@@ -14,24 +14,24 @@ export const getCars = async (req, res) => {
   }
 }
 
-// Get a single job by ID
+// Get a single car by ID
 export const getCarById = async (req, res) => {
   try {
     const {id} = req.params
 
-    const job = await Car.findById(id)
+    const car = await Car.findById(id)
     .populate({path: 'sellerId', select:'-password'})
 
-    if (!job) {
+    if (!car) {
       return res.json({
         success: false, 
-        message: 'Job not found'
+        message: 'Car not found'
       })
     }
 
     res.json({
       success: true,
-      job
+      car
     })
 
 

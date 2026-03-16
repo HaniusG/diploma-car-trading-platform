@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import Loading from '../components/Loading'
-import { assets} from '../assets/assets'
+import { assets } from '../assets/assets'
 import Navbar from '../components/Navbar'
 import kconvert from 'k-convert'
 import moment from 'moment'
@@ -10,28 +10,36 @@ import CarCard from '../components/CarCard'
 import Footer from '../components/Footer'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { useAuth } from '@clerk/clerk-react'
 
 const BuyCars = () => {
 
   const { id } = useParams()
-
-  const { getToken } = useAuth()
 
   const navigate = useNavigate()
 
   const [carData, setCarData] = useState<any>(null)
   const [isAlreadyApplied, setIsAlreadyApplied] = useState(false)
 
-  const { cars, backendUrl, userData, buyerApplications, fetchBuyerApplications } = useContext(AppContext)
+  const {
+    cars,
+    backendUrl,
+    userData,
+    userToken,
+    role,
+    buyerApplications,
+    fetchBuyerApplications,
+  } = useContext(AppContext)
 
   const fetchCar = async () => {
 
     try {
       const { data } = await axios.get(backendUrl + `/api/cars/${id}`)
 
+      console.log(data);
+
       if (data.success) {
         setCarData(data.car)
+        console.log(carData);
       } else {
         toast.error(data.message)
       }
@@ -44,20 +52,13 @@ const BuyCars = () => {
 
     try {
 
-      if (!userData) {
-        return toast.error('Login to apply for jobs')
+      if (!userData || !userToken || String(role).trim() !== 'buyer') {
+        return toast.error('Login as a buyer to apply for cars')
       }
-
-      if (!userData) {
-        navigate('/applications')
-        return toast.error('Upload your data to apply')
-      }
-
-      const token = await getToken()
 
       const { data } = await axios.post(backendUrl + '/api/users/apply',
         { carId: carData._id },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { token: userToken } }
       )
 
       if (data.success) {
@@ -73,7 +74,9 @@ const BuyCars = () => {
   }
 
   const checkAlreadyApplied = () => {
-    const hasApplied: any = buyerApplications.some((item: any) => item.carId._id === carData._id)
+    const hasApplied: any = buyerApplications.some(
+      (item: any) => item?.carId && item.carId._id === carData._id
+    )
     setIsAlreadyApplied(hasApplied)
   }
 
@@ -120,7 +123,7 @@ const BuyCars = () => {
             </div>
 
             <div className='flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center'>
-              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Apply now'}</button>
+              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Buy now'}</button>
               <p className='mt-1 text-gray-600'>Posted {moment(carData.date).fromNow()}</p>
             </div>
 
@@ -130,15 +133,26 @@ const BuyCars = () => {
             <div className='w-full lg:w-2/3'>
               <h2 className='font-bold text-2xl mb-4'>Car description</h2>
               <div className='rich-text' dangerouslySetInnerHTML={{ __html: carData.description }}></div>
-              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10 cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Apply now'}</button>
+              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10 cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Buy now'}</button>
             </div>
             {/* Right Section More Jobs */}
             <div className='w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5'>
               <h2>More cars from {carData.sellerId.name}</h2>
-              {cars.filter((car: any) => car._id !== carData._id && car.sellerId._id === carData.sellerId._id)
+              {cars
+                .filter(
+                  (car: any) =>
+                    car &&
+                    car._id !== carData._id &&
+                    car.sellerId &&
+                    car.sellerId._id === carData.sellerId._id
+                )
                 .filter((car: any) => {
                   // Applied jobs id's
-                  const appliedCarsIds = new Set(buyerApplications.map((app: any) => app.carId && app.carId._id))
+                  const appliedCarsIds = new Set(
+                    buyerApplications
+                      .filter((app: any) => app?.carId && app.carId._id)
+                      .map((app: any) => app.carId._id)
+                  )
                   // If did not apply, then show
                   return !appliedCarsIds.has(car._id)
                 }).slice(0, 4)
