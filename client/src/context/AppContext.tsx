@@ -137,7 +137,7 @@ export type UserApplication = {
     image: string;
   };
 
-  jobId: {
+  carId: {
     _id: string;
     title: string;
     description: string;
@@ -194,7 +194,7 @@ export const AppContextProvider = (props: any) => {
   // Function to fetch seller data
   const fetchUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/seller/seller', { headers: { token: userToken } })
+      const { data } = await axios.get(backendUrl + '/api/sellers/seller', { headers: { token: userToken } })
 
       if (data.success) {
         setUserData(data.user)

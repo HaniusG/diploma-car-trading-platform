@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
-import ApplyJob from './pages/ApplyJob'
+import BuyCars from './pages/BuyCars'
 import Applications from './pages/Applications'
 import UserLogin from './components/UserLogin'
 import { AppContext } from './context/AppContext'
@@ -22,7 +22,7 @@ const App = () => {
       <ToastContainer />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/apply-job/:id' element={<ApplyJob />} />
+        <Route path='/buy-car/:id' element={<BuyCars />} />
         <Route path='/applications' element={<Applications />} />
         <Route path='/dashboard' element={<Dashboard />}>
           {userToken ? <>

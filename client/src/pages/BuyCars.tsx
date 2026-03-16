@@ -6,13 +6,13 @@ import { assets} from '../assets/assets'
 import Navbar from '../components/Navbar'
 import kconvert from 'k-convert'
 import moment from 'moment'
-import JobCard from '../components/JobCard'
+import CarCard from '../components/CarCard'
 import Footer from '../components/Footer'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useAuth } from '@clerk/clerk-react'
 
-const ApplyJobs = () => {
+const BuyCars = () => {
 
   const { id } = useParams()
 
@@ -20,18 +20,18 @@ const ApplyJobs = () => {
 
   const navigate = useNavigate()
 
-  const [jobData, setJobData] = useState<any>(null)
+  const [carData, setCarData] = useState<any>(null)
   const [isAlreadyApplied, setIsAlreadyApplied] = useState(false)
 
-  const { jobs, backendUrl, userData, userApplications, fetchUserApplications } = useContext(AppContext)
+  const { cars, backendUrl, userData, buyerApplications, fetchBuyerApplications } = useContext(AppContext)
 
-  const fetchJob = async () => {
+  const fetchCar = async () => {
 
     try {
-      const { data } = await axios.get(backendUrl + `/api/jobs/${id}`)
+      const { data } = await axios.get(backendUrl + `/api/cars/${id}`)
 
       if (data.success) {
-        setJobData(data.job)
+        setCarData(data.car)
       } else {
         toast.error(data.message)
       }
@@ -48,21 +48,21 @@ const ApplyJobs = () => {
         return toast.error('Login to apply for jobs')
       }
 
-      if (!userData.resume) {
+      if (!userData) {
         navigate('/applications')
-        return toast.error('Upload your resume to apply')
+        return toast.error('Upload your data to apply')
       }
 
       const token = await getToken()
 
       const { data } = await axios.post(backendUrl + '/api/users/apply',
-        { jobId: jobData._id },
+        { carId: carData._id },
         { headers: { Authorization: `Bearer ${token}` } }
       )
 
       if (data.success) {
         toast.success(data.message)
-        fetchUserApplications()
+        fetchBuyerApplications()
       } else {
         toast.error(data.message)
       }
@@ -73,21 +73,21 @@ const ApplyJobs = () => {
   }
 
   const checkAlreadyApplied = () => {
-    const hasApplied: any = userApplications.some((item: any) => item.jobId._id === jobData._id)
+    const hasApplied: any = buyerApplications.some((item: any) => item.carId._id === carData._id)
     setIsAlreadyApplied(hasApplied)
   }
 
   useEffect(() => {
-    fetchJob()
+    fetchCar()
   }, [id])
 
   useEffect(() => {
-    if (userApplications.length > 0 && jobData) {
+    if (buyerApplications.length > 0 && carData) {
       checkAlreadyApplied()
     }
-  }, [jobData, userApplications, id])
+  }, [carData, buyerApplications, id])
 
-  return jobData ? (
+  return carData ? (
     <>
       <Navbar />
 
@@ -95,25 +95,25 @@ const ApplyJobs = () => {
         <div className='bg-white text-black rounded-lg w-ful'>
           <div className='flex justify-center md:justify-between flex-wrap gap-8 px-14 py-20  mb-6 bg-sky-50 border border-sky-400 rounded-xl'>
             <div className='flex flex-col md:flex-row items-center'>
-              <img className='h-24 bg-white rounded-lg p-4 mr-4 max-md:mb-4 border' src={jobData.sellerId.image} alt="" />
+              <img className='h-24 bg-white rounded-lg p-4 mr-4 max-md:mb-4 border' src={carData.sellerId.image} alt="" />
               <div className='text-center md:text-left text-neutral-700'>
-                <h1 className='text-2xl sm:text-4xl font-medium'>{jobData.title}</h1>
+                <h1 className='text-2xl sm:text-4xl font-medium'>{carData.title}</h1>
                 <div className='flex flex-row flex-wrap max-md:justify-center gap-y-2 gap-6 items-center text-gray-600 mt-2'>
                   <span className='flex items-center gap-1'>
                     <img src={assets.suitcase_icon} alt="" />
-                    {jobData.sellerId.name}
+                    {carData.sellerId.name}
                   </span>
                   <span className='flex items-center gap-1'>
                     <img src={assets.location_icon} alt="" />
-                    {jobData.location}
+                    {carData.location}
                   </span>
                   <span className='flex items-center gap-1'>
                     <img src={assets.person_icon} alt="" />
-                    {jobData.level}
+                    {carData.level}
                   </span>
                   <span className='flex items-center gap-1'>
                     <img src={assets.money_icon} alt="" />
-                    CTC: {kconvert.convertTo(jobData.salary)}
+                    CTC: {kconvert.convertTo(carData.salary)}
                   </span>
                 </div>
               </div>
@@ -121,28 +121,28 @@ const ApplyJobs = () => {
 
             <div className='flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center'>
               <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Apply now'}</button>
-              <p className='mt-1 text-gray-600'>Posted {moment(jobData.date).fromNow()}</p>
+              <p className='mt-1 text-gray-600'>Posted {moment(carData.date).fromNow()}</p>
             </div>
 
           </div>
 
           <div className='flex flex-col lg:flex-row justify-between items-start'>
             <div className='w-full lg:w-2/3'>
-              <h2 className='font-bold text-2xl mb-4'>Job description</h2>
-              <div className='rich-text' dangerouslySetInnerHTML={{ __html: jobData.description }}></div>
+              <h2 className='font-bold text-2xl mb-4'>Car description</h2>
+              <div className='rich-text' dangerouslySetInnerHTML={{ __html: carData.description }}></div>
               <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10 cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Apply now'}</button>
             </div>
             {/* Right Section More Jobs */}
             <div className='w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5'>
-              <h2>More jobs from {jobData.sellerId.name}</h2>
-              {jobs.filter((job: any) => job._id !== jobData._id && job.sellerId._id === jobData.sellerId._id)
-                .filter((job: any) => {
+              <h2>More cars from {carData.sellerId.name}</h2>
+              {cars.filter((car: any) => car._id !== carData._id && car.sellerId._id === carData.sellerId._id)
+                .filter((car: any) => {
                   // Applied jobs id's
-                  const appliedJobsIds = new Set(userApplications.map((app: any) => app.jobId && app.jobId._id))
+                  const appliedCarsIds = new Set(buyerApplications.map((app: any) => app.carId && app.carId._id))
                   // If did not apply, then show
-                  return !appliedJobsIds.has(job._id)
+                  return !appliedCarsIds.has(car._id)
                 }).slice(0, 4)
-                .map((job: any, index: number) => <JobCard key={index} job={job} />)}
+                .map((car: any, index: number) => <CarCard key={index} car={car} />)}
             </div>
           </div>
 
@@ -155,4 +155,4 @@ const ApplyJobs = () => {
   )
 }
 
-export default ApplyJobs
+export default BuyCars

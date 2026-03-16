@@ -30,7 +30,7 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 });
 // Webhook route needs raw body for signature verification
 app.post('/webhooks', express.raw({ type: 'application/json' }), clerkWebhooks)
-app.use('/api/seller', sellerRoutes)
+app.use('/api/sellers', sellerRoutes)
 app.use('/api/cars', carRoutes)
 app.use('/api/users', userRoutes)
 

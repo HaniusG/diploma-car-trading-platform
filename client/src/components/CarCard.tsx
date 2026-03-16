@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 type Car = {
-  id: number;
+  _id: number;
   title: string;
   category: string;
   condition: string;
@@ -16,6 +16,7 @@ type CarCardProps = {
 };
 
 const CarCard: React.FC<CarCardProps> = ({ car }) => {
+
   const navigate = useNavigate();
 
   return (
@@ -42,7 +43,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
       <div className="mt-4 flex gap-4 text-sm">
         <button
           onClick={() => {
-            navigate(`/car/${car.id}`);
+            navigate(`/buy-car/${car._id}`);
             scrollTo(0, 0);
           }}
           className="bg-blue-600 hover:bg-blue-700 duration-200 cursor-pointer text-white px-4 py-2 rounded"
@@ -52,7 +53,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
 
         <button
           onClick={() => {
-            navigate(`/car/${car.id}`);
+            navigate(`/buy-car/${car._id}`);
             scrollTo(0, 0);
           }}
           className="text-gray-500 border border-gray-500 rounded px-4 py-2 cursor-pointer"
