@@ -12,7 +12,7 @@ const ViewApplications = () => {
   const [applicants, setApplicants] = useState<any>(false)
 
   // Function to fetch seller Job Applications data 
-  const fetchSellerJobApplications = async () => {
+  const fetchSellerCarApplications = async () => {
 
     try {
 
@@ -33,7 +33,7 @@ const ViewApplications = () => {
   }
 
   // Function to update application status
-  const changeJobApplicationStatus = async (id: any, status: string) => {
+  const changeCarApplicationStatus = async (id: any, status: string) => {
     try {
       const {data} = await axios.post(backendUrl+'/api/seller/change-status', 
         {id, status},
@@ -41,7 +41,7 @@ const ViewApplications = () => {
       )
 
       if (data.success) {
-        fetchSellerJobApplications()
+        fetchSellerCarApplications()
       } else {
         toast.error(data.message)
       }
@@ -52,7 +52,7 @@ const ViewApplications = () => {
 
   useEffect(() => {
     if (userToken) {
-      fetchSellerJobApplications()
+      fetchSellerCarApplications()
     }
 
   }, [userToken])
@@ -77,15 +77,15 @@ const ViewApplications = () => {
             </tr>
           </thead>
           <tbody>
-            {applicants.filter((item: any) => item.jobId && item.userId).map((applicant: any, index: number) => (
+            {applicants.filter((item: any) => item.carId && item.userId).map((applicant: any, index: number) => (
               <tr key={index} className='text-gray-700'>
                 <td className='py-2 px-4 border-b text-center'>{index + 1}</td>
                 <td className='py-2 px-4 border-b text-center flex items-center'>
                   <img className='w-10 h-10 rounded-full mr-3 max-sm:hidden' src={applicant.userId.image} alt="" />
                   <span>{applicant.userId.name}</span>
                 </td>
-                <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.jobId.title}</td>
-                <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.jobId.location}</td>
+                <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.carId.title}</td>
+                <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.carId.location}</td>
                 <td className='py-2 px-4 border-b'>
                   <a href={applicant.userId.resume} target='_blank'
                     className='bg-blue-50 text-blue-400 px-3 py-1 rounded inline-flex gap-2 items-center'
@@ -99,8 +99,8 @@ const ViewApplications = () => {
                   <div className='relative inline-block text-left group'>
                       <button className='text-gray-500 action-button'>...</button>
                       <div className='z-10 hidden absolute right-0 md:left-0 top-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow group-hover:block'>
-                        <button onClick={() => changeJobApplicationStatus(applicant._id, 'Accepted')} className='block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100'>Accept</button>
-                        <button onClick={() => changeJobApplicationStatus(applicant._id, 'Rejected')} className='block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100'>Reject</button>
+                        <button onClick={() => changeCarApplicationStatus(applicant._id, 'Accepted')} className='block w-full text-left px-4 py-2 text-blue-500 hover:bg-gray-100'>Accept</button>
+                        <button onClick={() => changeCarApplicationStatus(applicant._id, 'Rejected')} className='block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100'>Reject</button>
                       </div>
                     </div>
                     :<div>{applicant.status}</div>

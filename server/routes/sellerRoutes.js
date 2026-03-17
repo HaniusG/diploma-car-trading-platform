@@ -1,5 +1,5 @@
 import express from 'express'
-import { changeJobApplicationStatus, changeVisibility, getUserData, getSellerCarApplicants, getSellerPostedCars, loginUser, postCar, registerUser } from '../controllers/sellerControllers.js'
+import { changeCarApplicationStatus, changeVisibility, getUserData, getSellerCarApplicants, getSellerPostedCars, loginUser, postCar, registerUser } from '../controllers/sellerControllers.js'
 import upload from '../config/multer.js'
 import { protectUser } from '../middleware/authMiddleware.js'
 
@@ -24,7 +24,7 @@ router.get('/applicants', protectUser, getSellerCarApplicants)
 router.get('/list-cars', protectUser, getSellerPostedCars)
 
 // Change Application Status
-router.post('/change-status', protectUser, changeJobApplicationStatus)
+router.post('/change-status', protectUser, changeCarApplicationStatus)
 
 // Change application visibility
 router.post('/change-visibility', protectUser, changeVisibility)

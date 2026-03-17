@@ -143,7 +143,7 @@ export const getSellerCarApplicants = async (req, res) => {
     // Find car applications for the user and populate related data
     const applications = await CarApplication.find({ sellerId })
       .populate('userId', 'name image resume')
-      .populate('jobId', 'title location category level salary')
+      .populate('carId', 'title location category level salary')
       .exec()
 
     return res.json({ success: true, applications })
@@ -173,7 +173,7 @@ export const getSellerPostedCars = async (req, res) => {
 }
 
 // Change car Application Status
-export const changeJobApplicationStatus = async (req, res) => {
+export const changeCarApplicationStatus = async (req, res) => {
 
   try {
     const { id, status } = req.body
