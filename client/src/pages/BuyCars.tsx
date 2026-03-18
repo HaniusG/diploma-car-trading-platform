@@ -34,9 +34,6 @@ const BuyCars = () => {
 
     try {
       const { data } = await axios.get(backendUrl + `/api/cars/${id}`)
-
-      console.log(data);
-
       if (data.success) {
         setCarData(data.car)
         console.log(carData);
@@ -96,36 +93,41 @@ const BuyCars = () => {
 
       <div className='min-h-screen flex flex-col py-10 container px-4 2xl:px-20 mx-auto'>
         <div className='bg-white text-black rounded-lg w-ful'>
-          <div className='flex justify-center md:justify-between flex-wrap gap-8 px-14 py-20  mb-6 bg-sky-50 border border-sky-400 rounded-xl'>
-            <div className='flex flex-col md:flex-row items-center'>
-              <img className='h-24 bg-white rounded-lg p-4 mr-4 max-md:mb-4 border' src={carData.sellerId.image} alt="" />
-              <div className='text-center md:text-left text-neutral-700'>
-                <h1 className='text-2xl sm:text-4xl font-medium'>{carData.title}</h1>
-                <div className='flex flex-row flex-wrap max-md:justify-center gap-y-2 gap-6 items-center text-gray-600 mt-2'>
-                  <span className='flex items-center gap-1'>
-                    <img src={assets.suitcase_icon} alt="" />
-                    {carData.sellerId.name}
-                  </span>
-                  <span className='flex items-center gap-1'>
-                    <img src={assets.location_icon} alt="" />
-                    {carData.location}
-                  </span>
-                  <span className='flex items-center gap-1'>
-                    <img src={assets.person_icon} alt="" />
-                    {carData.level}
-                  </span>
-                  <span className='flex items-center gap-1'>
-                    <img src={assets.money_icon} alt="" />
-                    CTC: {kconvert.convertTo(carData.salary)}
-                  </span>
+          <div className='flex md:gap-20 justify-center md:justify-between flex-wrap gap-8 px-14 py-20  mb-6 bg-sky-50 border border-sky-400 rounded-xl'>
+            <img className='object-cover h-70 w-100  bg-white rounded-lg p-4 mr-4 max-md:mb-4 border' src={carData.sellerId.image} alt="" />
+            <div className='flex justify-center md:justify-between md:w-150'>
+              <div className='flex flex-col md:flex-row items-center'>
+                <div className='text-center md:text-left text-neutral-700'>
+                  <h1 className='text-2xl sm:text-4xl font-medium'>{carData.title}</h1>
+                  <div className='flex flex-row flex-wrap max-md:justify-center gap-y-2 gap-6 items-center text-gray-600 mt-2'>
+                    <span className='flex items-center gap-1'>
+                      <img src={assets.suitcase_icon} alt="" />
+                      {carData.sellerId.name}
+                    </span>
+                    <span className='flex items-center gap-1'>
+                      <img src={assets.location_icon} alt="" />
+                      {carData.location}
+                    </span>
+                    <span className='flex items-center gap-1'>
+                      <img src={assets.person_icon} alt="" />
+                      {carData.level}
+                    </span>
+                    <span className='flex items-center gap-1'>
+                      <img src={assets.money_icon} alt="" />
+                      Price: {kconvert.convertTo(carData.price)}
+                    </span>
+                  </div>
                 </div>
               </div>
+
+              <div className='flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center'>
+                <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied' : 'Buy now'}</button>
+                <p className='mt-1 text-gray-600'>Posted {moment(carData.date).fromNow()}</p>
+              </div>
+
             </div>
 
-            <div className='flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center'>
-              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Buy now'}</button>
-              <p className='mt-1 text-gray-600'>Posted {moment(carData.date).fromNow()}</p>
-            </div>
+
 
           </div>
 
@@ -133,7 +135,7 @@ const BuyCars = () => {
             <div className='w-full lg:w-2/3'>
               <h2 className='font-bold text-2xl mb-4'>Car description</h2>
               <div className='rich-text' dangerouslySetInnerHTML={{ __html: carData.description }}></div>
-              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10 cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied': 'Buy now'}</button>
+              <button onClick={applyHandler} className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10 cursor-pointer hover:bg-blue-700 duration-200'>{isAlreadyApplied ? 'Already applied' : 'Buy now'}</button>
             </div>
             {/* Right Section More Jobs */}
             <div className='w-full lg:w-1/3 mt-8 lg:mt-0 lg:ml-8 space-y-5'>
