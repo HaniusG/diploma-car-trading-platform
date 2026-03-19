@@ -103,7 +103,30 @@ import uploadImageToCloudinary from "../utils/cloudinaryUploader.js"
 export const postCar = async (req, res) => {
   try {
 
-    const { title, description, location, price, condition, category } = req.body
+    const {
+      title,
+      description,
+      location,
+      price,
+      condition,
+      category,
+      brand,
+      model,
+      year,
+      mileage,
+      transmission,
+      fuelType,
+      color,
+      seats,
+      engineSize,
+      horsepower,
+      torque,
+      cylinders,
+      fuelConsumption,
+      gears,
+      drivetrain,
+      steering,
+    } = req.body
     const sellerId = req.user._id
 
     if (!req.file) {
@@ -122,7 +145,25 @@ export const postCar = async (req, res) => {
       image: uploadResult.secure_url,
       date: Date.now(),
       condition,
-      category
+      category,
+      specs: {
+        brand,
+        model,
+        year: Number(year),
+        mileage: Number(mileage),
+        transmission,
+        fuelType,
+        color,
+        seats: Number(seats),
+        engineSize: engineSize ? Number(engineSize) : undefined,
+        horsepower: horsepower ? Number(horsepower) : undefined,
+        torque: torque ? Number(torque) : undefined,
+        cylinders: cylinders ? Number(cylinders) : undefined,
+        fuelConsumption: fuelConsumption ? Number(fuelConsumption) : undefined,
+        gears: gears ? Number(gears) : undefined,
+        drivetrain,
+        steering,
+      }
     })
 
     await newCar.save()

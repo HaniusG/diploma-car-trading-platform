@@ -90,6 +90,136 @@ export const CarLocations = [
     "Abovyan"
 ]
 
+export const CarBrands = [
+    "Abarth",
+    "Acura",
+    "Alfa Romeo",
+    "Aston Martin",
+    "Audi",
+    "Bentley",
+    "BMW",
+    "Bugatti",
+    "Buick",
+    "BYD",
+    "Cadillac",
+    "Changan",
+    "Chevrolet",
+    "Chery",
+    "Citroën",
+    "Dacia",
+    "Daewoo",
+    "Daihatsu",
+    "Dodge",
+    "FAW",
+    "Ferrari",
+    "Fiat",
+    "Fisker",
+    "Ford",
+    "Geely",
+    "GMC",
+    "Great Wall",
+    "Haval",
+    "Honda",
+    "Hummer",
+    "Hyundai",
+    "Infiniti",
+    "Isuzu",
+    "Iveco",
+    "Jaguar",
+    "Jeep",
+    "Kia",
+    "Koenigsegg",
+    "Lada",
+    "Lamborghini",
+    "Lancia",
+    "Land Rover",
+    "Lexus",
+    "Lincoln",
+    "Lotus",
+    "Maserati",
+    "Mazda",
+    "McLaren",
+    "Mercedes-Benz",
+    "MG",
+    "Mini",
+    "Mitsubishi",
+    "Nissan",
+    "Opel",
+    "Pagani",
+    "Peugeot",
+    "Porsche",
+    "Renault",
+    "Rivian",
+    "Rolls-Royce",
+    "Saab",
+    "SEAT",
+    "Skoda",
+    "Smart",
+    "SsangYong",
+    "Subaru",
+    "Suzuki",
+    "Tesla",
+    "Toyota",
+    "Volkswagen",
+    "Volvo",
+    "Zotye",
+
+    // EV / New Chinese oriented brands
+    "Aion",
+    "Aiways",
+    "Arcfox",
+    "BYTON",
+    "Leapmotor",
+    "Nio",
+    "Ora",
+    "Seres",
+    "Zeekr",
+
+    // Specialty / low-volume
+    "Alpine",
+    "Borgward",
+    "Caterham",
+    "Dodge SRT",
+    "Ginetta",
+    "Hennessey",
+    "Lucid",
+    "Mahindra",
+    "Maruti Suzuki",
+    "Roewe",
+    "Scion",
+    "Tata",
+    "Vauxhall",
+    "Wiesmann"
+]
+
+export const CarTransmissions = [
+    "Automatic",
+    "Manual",
+]
+
+export const CarFuelTypes = [
+    "Petrol",
+    "Diesel",
+    "Hybrid",
+    "Electric",
+]
+
+export const CarColors = [
+    "Black",
+    "White",
+    "Silver",
+    "Grey",
+    "Blue",
+    "Red",
+    "Purple"
+]
+
+export const CarDrivetrains = [
+    "FWD",
+    "RWD",
+    "AWD",
+]
+
 // Sample data for Manage Jobs Page
 export const manageJobsData = [
     { _id: 1, title: "Full Stack Developer", date: 1729102298497, location: "Yerevan", applicants: 20 },

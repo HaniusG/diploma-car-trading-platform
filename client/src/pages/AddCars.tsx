@@ -1,6 +1,14 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import Quill from 'quill'
-import { CarCategories, CarLocations } from '../assets/assets'
+import {
+  CarCategories,
+  CarLocations,
+  CarBrands,
+  CarTransmissions,
+  CarFuelTypes,
+  CarColors,
+  CarDrivetrains,
+} from '../assets/assets'
 import axios from 'axios'
 import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
@@ -13,6 +21,25 @@ const AddJobs = () => {
   const [condition, setCondition] = useState<string>('New')
   const [price, setPrice] = useState<number>(0);
   const [image, setImage] = useState<File | null>(null)
+
+  // specs
+  const [brand, setBrand] = useState<string>('Mercedes-Benz')
+  const [model, setModel] = useState<string>('')
+  const [year, setYear] = useState<number>(2020)
+  const [mileage, setMileage] = useState<number>(0)
+  const [transmission, setTransmission] = useState<string>('Automatic')
+  const [fuelType, setFuelType] = useState<string>('Petrol')
+  const [color, setColor] = useState<string>('Black')
+  const [seats, setSeats] = useState<number>(4)
+
+  const [engineSize, setEngineSize] = useState<number | ''>('')
+  const [horsepower, setHorsepower] = useState<number | ''>('')
+  const [torque, setTorque] = useState<number | ''>('')
+  const [cylinders, setCylinders] = useState<number | ''>('')
+  const [fuelConsumption, setFuelConsumption] = useState<number | ''>('')
+  const [gears, setGears] = useState<number | ''>('')
+  const [drivetrain, setDrivetrain] = useState<string>('FWD')
+  const [steering, setSteering] = useState<string>('Left')
 
   const { backendUrl, userToken } = useContext(AppContext)
 
@@ -34,6 +61,25 @@ const AddJobs = () => {
       formData.append('category', category)
       formData.append('condition', condition)
 
+      // specs
+      formData.append('brand', brand)
+      formData.append('model', model)
+      formData.append('year', year.toString())
+      formData.append('mileage', mileage.toString())
+      formData.append('transmission', transmission)
+      formData.append('fuelType', fuelType)
+      formData.append('color', color)
+      formData.append('seats', seats.toString())
+
+      if (engineSize !== '') formData.append('engineSize', String(engineSize))
+      if (horsepower !== '') formData.append('horsepower', String(horsepower))
+      if (torque !== '') formData.append('torque', String(torque))
+      if (cylinders !== '') formData.append('cylinders', String(cylinders))
+      if (fuelConsumption !== '') formData.append('fuelConsumption', String(fuelConsumption))
+      if (gears !== '') formData.append('gears', String(gears))
+      if (drivetrain) formData.append('drivetrain', drivetrain)
+      if (steering) formData.append('steering', steering)
+
       if (image) {
         formData.append('image', image)
       }
@@ -45,10 +91,31 @@ const AddJobs = () => {
 
       if (data.success) {
         toast.success("Car posted successfully")
+        // reset main fields
         setTitle('')
+        setLocation('Yerevan')
+        setCategory('Sedan')
+        setCondition('New')
         setPrice(0)
         setImage(null)
         quillRef.current.root.innerHTML = ""
+        // reset specs
+        setBrand('Mercedes-Benz')
+        setModel('')
+        setYear(2020)
+        setMileage(0)
+        setTransmission('Automatic')
+        setFuelType('Petrol')
+        setColor('Black')
+        setSeats(4)
+        setEngineSize('')
+        setHorsepower('')
+        setTorque('')
+        setCylinders('')
+        setFuelConsumption('')
+        setGears('')
+        setDrivetrain('FWD')
+        setSteering('Left')
       } else {
         toast.error(data.message)
       }
@@ -101,7 +168,7 @@ const AddJobs = () => {
       <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
         <div>
           <p className='mb-2'>Category</p>
-          <select className='w-full px-3 py-2 border-2 border-gray-300 rounded' onChange={e => setCategory(e.target.value)}>
+          <select className='w-full px-3 py-2 border-2 border-gray-300 rounded' value={category} onChange={e => setCategory(e.target.value)}>
             {CarCategories.map((category, index) => (
               <option key={index} value={category}>{category}</option>
             ))}
@@ -110,7 +177,7 @@ const AddJobs = () => {
 
         <div>
           <p className='mb-2'>Location</p>
-          <select className='w-full px-3 py-2 border-2 border-gray-300 rounded' onChange={e => setLocation(e.target.value)}>
+          <select className='w-full px-3 py-2 border-2 border-gray-300 rounded' value={location} onChange={e => setLocation(e.target.value)}>
             {CarLocations.map((location, index) => (
               <option key={index} value={location}>{location}</option>
             ))}
@@ -119,19 +186,240 @@ const AddJobs = () => {
 
         <div>
           <p className='mb-2'>Condition</p>
-          <select className='w-full px-3 py-2 border-2 border-gray-300 rounded' onChange={e => setCondition(e.target.value)}>
-            <option value="Beginner level">New</option>
-            <option value="Intermediate level">Very good</option>
-            <option value="Senior level">Good</option>
-            <option value="Senior level">Needs Repair</option>
-            <option value="Senior level">Damaged</option>
+          <select className='w-full px-3 py-2 border-2 border-gray-300 rounded' value={condition} onChange={e => setCondition(e.target.value)}>
+            <option value="New">New</option>
+            <option value="Very good">Very good</option>
+            <option value="Good">Good</option>
+            <option value="Needs Repair">Needs Repair</option>
+            <option value="Damaged">Damaged</option>
           </select>
         </div>
       </div>
 
       <div>
         <p className='mb-2'>Price</p>
-        <input min={0} className='w-full px-3 py-2 border-2 border-gray-300 roundded sm:w-[120px]' onChange={e => setPrice(Number(e.target.value))} type="Number" placeholder='2500' />
+        <input
+          min={0}
+          className='w-full px-3 py-2 border-2 border-gray-300 roundded sm:w-[120px]'
+          onChange={e => setPrice(Number(e.target.value))}
+          type="number"
+          placeholder='2500'
+        />
+      </div>
+
+      {/* Specs section */}
+      <div className='flex flex-col gap-4 w-full mt-4'>
+        {/* Brand & Model */}
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Brand</p>
+            <select
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={brand}
+              onChange={e => setBrand(e.target.value)}
+            >
+              {CarBrands.map((b, i) => (
+                <option key={i} value={b}>{b}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Model</p>
+            <input
+              type="text"
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={model}
+              onChange={e => setModel(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        {/* Year & Mileage */}
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Year</p>
+            <input
+              type="number"
+              min={1900}
+              max={2100}
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={year}
+              onChange={e => setYear(Number(e.target.value))}
+              required
+            />
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Mileage (km)</p>
+            <input
+              type="number"
+              min={0}
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={mileage}
+              onChange={e => setMileage(Number(e.target.value))}
+              required
+            />
+          </div>
+        </div>
+
+        {/* Transmission, Fuel, Color, Seats */}
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Transmission</p>
+            <select
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={transmission}
+              onChange={e => setTransmission(e.target.value)}
+            >
+              {CarTransmissions.map((t, i) => (
+                <option key={i} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Fuel Type</p>
+            <select
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={fuelType}
+              onChange={e => setFuelType(e.target.value)}
+            >
+              {CarFuelTypes.map((f, i) => (
+                <option key={i} value={f}>{f}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Color</p>
+            <input
+              type="text"
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={color}
+              onChange={e => setColor(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Seats</p>
+            <input
+              type="number"
+              min={1}
+              max={9}
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={seats}
+              onChange={e => setSeats(Number(e.target.value))}
+              required
+            />
+          </div>
+        </div>
+
+        {/* Optional specs */}
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Engine Size (L)</p>
+            <input
+              type="number"
+              min={0}
+              step="0.1"
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={engineSize}
+              onChange={e => setEngineSize(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Horsepower (HP)</p>
+            <input
+              type="number"
+              min={0}
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={horsepower}
+              onChange={e => setHorsepower(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+        </div>
+
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Torque (Nm)</p>
+            <input
+              type="number"
+              min={0}
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={torque}
+              onChange={e => setTorque(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Cylinders</p>
+            <input
+              type="number"
+              min={0}
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={cylinders}
+              onChange={e => setCylinders(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+        </div>
+
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Fuel Consumption (L/100km)</p>
+            <input
+              type="number"
+              min={0}
+              step="0.1"
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={fuelConsumption}
+              onChange={e => setFuelConsumption(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Gears</p>
+            <input
+              type="number"
+              min={0}
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={gears}
+              onChange={e => setGears(e.target.value === '' ? '' : Number(e.target.value))}
+            />
+          </div>
+        </div>
+
+        <div className='flex flex-col sm:flex-row gap-4'>
+          <div className='flex-1'>
+            <p className='mb-2'>Drivetrain</p>
+            <select
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={drivetrain}
+              onChange={e => setDrivetrain(e.target.value)}
+            >
+              {CarDrivetrains.map((d, i) => (
+                <option key={i} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className='flex-1'>
+            <p className='mb-2'>Steering</p>
+            <select
+              className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+              value={steering}
+              onChange={e => setSteering(e.target.value)}
+            >
+              <option value="Left">Left</option>
+              <option value="Right">Right</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <button className='w-28 py-3 mt-4 bg-black text-white rounded cursor-pointer'>ADD</button>
