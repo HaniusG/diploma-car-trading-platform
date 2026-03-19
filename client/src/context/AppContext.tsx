@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useAuth, useUser } from "@clerk/clerk-react";
 
 const cars = [
   {
@@ -158,9 +157,6 @@ export const AppContextProvider = (props: any) => {
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL
 
-  const { user } = useUser()
-  const { getToken } = useAuth()
-
   const [searchFilter, setSearchFilter] = useState<{title: string, location: string}>({
     title: '',
     location: ''
@@ -194,31 +190,15 @@ export const AppContextProvider = (props: any) => {
   // Function to fetch seller data
   const fetchUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/seller/seller', { headers: { token: userToken } })
+      const { data } = await axios.get(backendUrl + '/api/users/user', { headers: { token: userToken } })
 
       if (data.success) {
         setUserData(data.user)
+        if (data.user?.role) setRole(String(data.user.role))
       } else {
         toast.error(data.message)
       }
 
-    } catch (error: any) {
-      toast.error(error.message)
-    }
-  }
-
-  // Function  to fetch user data
-  const fetchBuyerData = async () => {
-    try {
-      const token = await getToken()
-      const { data } = await axios.get(backendUrl + '/api/users/user',
-        { headers: { Authorization: `Bearer ${token}` } })
-
-      if (data.success) {
-        setUserData(data.user)
-      } else {
-        toast.error(data.message)
-      }
     } catch (error: any) {
       toast.error(error.message)
     }
@@ -227,10 +207,10 @@ export const AppContextProvider = (props: any) => {
   // Funtion to fetch user's applied applications
   const fetchBuyerApplications = async () => {
     try {
-      const token = await getToken()
+      if (!userToken) return
 
       const {data} = await axios.get(backendUrl+'/api/users/applications',
-        {headers: {Authorization: `Bearer ${token}`}}
+        {headers: {token: userToken}}
       )
 
       if (data.success) {
@@ -257,15 +237,9 @@ export const AppContextProvider = (props: any) => {
   useEffect(() => {
     if (userToken) {
       fetchUserData()
-    }
-  }, [userToken])
-
-  useEffect(() => {
-    if (user) {
-      fetchUserData()
       fetchBuyerApplications()
     }
-  }, [user])
+  }, [userToken])
 
   const value: any = {
     searchFilter, setSearchFilter,
