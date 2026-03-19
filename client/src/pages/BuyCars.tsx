@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import Loading from '../components/Loading'
 import { assets } from '../assets/assets'
@@ -15,8 +15,6 @@ const BuyCars = () => {
 
   const { id } = useParams()
 
-  const navigate = useNavigate()
-
   const [carData, setCarData] = useState<any>(null)
   const [isAlreadyApplied, setIsAlreadyApplied] = useState(false)
 
@@ -25,7 +23,6 @@ const BuyCars = () => {
     backendUrl,
     userData,
     userToken,
-    role,
     buyerApplications,
     fetchBuyerApplications,
   } = useContext(AppContext)
@@ -49,7 +46,7 @@ const BuyCars = () => {
 
     try {
 
-      if (!userData || !userToken || String(role).trim() !== 'buyer') {
+      if (!userData || !userToken || String(userData.role).trim() !== 'buyer') {
         return toast.error('Login as a buyer to apply for cars')
       }
 

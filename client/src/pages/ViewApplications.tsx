@@ -70,9 +70,8 @@ const ViewApplications = () => {
             <tr className='border-b'>
               <th className='py-2 px-4 text-left'>#</th>
               <th className='py-2 px-4 text-left'>User name</th>
-              <th className='py-2 px-4 text-left max-sm:hidden'>Job Title</th>
+              <th className='py-2 px-4 text-left max-sm:hidden'>Car Title</th>
               <th className='py-2 px-4 text-left max-sm:hidden'>Location</th>
-              <th className='py-2 px-4 text-left'>Resume</th>
               <th className='py-2 px-4 text-left'>Action</th>
             </tr>
           </thead>
@@ -86,13 +85,6 @@ const ViewApplications = () => {
                 </td>
                 <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.carId.title}</td>
                 <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.carId.location}</td>
-                <td className='py-2 px-4 border-b'>
-                  <a href={applicant.userId.resume} target='_blank'
-                    className='bg-blue-50 text-blue-400 px-3 py-1 rounded inline-flex gap-2 items-center'
-                  >
-                    Resume <img src={assets.resume_download_icon} alt="" />
-                  </a>
-                </td>
                 <td className='py-2 px-4 border-b relative'>
                   {applicant.status === 'Pending'
                   ?
