@@ -6,7 +6,6 @@ import {
   CarBrands,
   CarTransmissions,
   CarFuelTypes,
-  CarColors,
   CarDrivetrains,
 } from '../assets/assets'
 import axios from 'axios'
@@ -25,6 +24,8 @@ const AddJobs = () => {
   // specs
   const [brand, setBrand] = useState<string>('Mercedes-Benz')
   const [model, setModel] = useState<string>('')
+  const [isBrandManuallyEdited, setIsBrandManuallyEdited] = useState<boolean>(false)
+  const [isModelManuallyEdited, setIsModelManuallyEdited] = useState<boolean>(false)
   const [year, setYear] = useState<number>(2020)
   const [mileage, setMileage] = useState<number>(0)
   const [transmission, setTransmission] = useState<string>('Automatic')
@@ -45,6 +46,94 @@ const AddJobs = () => {
 
   const editorRef = useRef<any>(null)
   const quillRef = useRef<any>(null)
+
+  const normalizeForMatch = (value: string) => {
+    return String(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '')
+      .trim()
+  }
+
+  const guessBrandFromTitle = (titleValue: string) => {
+    const titleNorm = normalizeForMatch(titleValue)
+    if (!titleNorm) return ''
+
+    let bestBrand = ''
+    let bestLen = 0
+
+    for (const b of CarBrands) {
+      const brandNorm = normalizeForMatch(b)
+      if (!brandNorm) continue
+      // Prefer the longest matching brand
+      if (titleNorm.includes(brandNorm) && brandNorm.length > bestLen) {
+        bestBrand = b
+        bestLen = brandNorm.length
+      }
+    }
+
+    return bestBrand
+  }
+
+  const guessModelFromTitle = (titleValue: string, matchedBrand: string) => {
+    const tokens = String(titleValue)
+      .split(/[^a-zA-Z0-9]+/g)
+      .map((t) => t.trim())
+      .filter(Boolean)
+
+    if (tokens.length === 0) return ''
+
+    // Remove year tokens (e.g., 2020, 2019, etc.)
+    const yearLike = new Set<string>()
+    for (const t of tokens) {
+      const n = Number(t)
+      if (Number.isFinite(n) && n >= 1900 && n <= 2100) {
+        yearLike.add(t)
+      }
+    }
+
+    // Remove brand tokens (brand may be multi-word like "Mercedes-Benz")
+    const brandTokens = normalizeForMatch(matchedBrand)
+      ? matchedBrand
+        .split(/[^a-zA-Z0-9]+/g)
+        .map((t) => normalizeForMatch(t))
+        .filter(Boolean)
+      : []
+
+    const brandTokenSet = new Set(brandTokens)
+
+    const remaining = tokens.filter((t) => {
+      const tn = normalizeForMatch(t)
+      if (yearLike.has(t)) return false
+      if (brandTokenSet.has(tn)) return false
+      return true
+    })
+
+    // Model is usually the remaining significant words
+    return remaining.join(' ').trim()
+  }
+
+  const handleTitleChange = (nextTitle: string) => {
+    setTitle(nextTitle)
+
+    // Only auto-fill if the user hasn't manually edited the corresponding fields
+    const canAutoBrand = !isBrandManuallyEdited
+    const canAutoModel = !isModelManuallyEdited
+    if (!canAutoBrand && !canAutoModel) return
+
+    if (nextTitle.trim().length < 2) return
+
+    const autoBrand = guessBrandFromTitle(nextTitle)
+
+    if (canAutoBrand && autoBrand) {
+      setBrand(autoBrand)
+    }
+
+    if (canAutoModel) {
+      const brandForModel = canAutoBrand ? (autoBrand || brand) : brand
+      const autoModel = guessModelFromTitle(nextTitle, brandForModel)
+      if (autoModel) setModel(autoModel)
+    }
+  }
 
   const onSubmitHandler = async (e: any) => {
     e.preventDefault()
@@ -116,6 +205,8 @@ const AddJobs = () => {
         setGears('')
         setDrivetrain('FWD')
         setSteering('Left')
+        setIsBrandManuallyEdited(false)
+        setIsModelManuallyEdited(false)
       } else {
         toast.error(data.message)
       }
@@ -145,7 +236,7 @@ const AddJobs = () => {
         <input
           type="text"
           placeholder='Type here'
-          onChange={e => setTitle(e.target.value)}
+          onChange={e => handleTitleChange(e.target.value)}
           value={title}
           required
           className='w-full max-w-lg px-3 py-2 border-2 border-gray-300 rounded'
@@ -216,7 +307,10 @@ const AddJobs = () => {
             <select
               className='w-full px-3 py-2 border-2 border-gray-300 rounded'
               value={brand}
-              onChange={e => setBrand(e.target.value)}
+              onChange={e => {
+                setIsBrandManuallyEdited(true)
+                setBrand(e.target.value)
+              }}
             >
               {CarBrands.map((b, i) => (
                 <option key={i} value={b}>{b}</option>
@@ -230,7 +324,10 @@ const AddJobs = () => {
               type="text"
               className='w-full px-3 py-2 border-2 border-gray-300 rounded'
               value={model}
-              onChange={e => setModel(e.target.value)}
+              onChange={e => {
+                setIsModelManuallyEdited(true)
+                setModel(e.target.value)
+              }}
               required
             />
           </div>

@@ -7,9 +7,6 @@ import { AppContext } from '../context/AppContext'
 
 const Navbar = () => {
 
-  const { openSignIn } = useClerk()
-  const { user } = useUser()
-
   const navigate = useNavigate()
 
   const { setShowLogin, setRole, userData, setUserData, setUserToken  } = useContext(AppContext)

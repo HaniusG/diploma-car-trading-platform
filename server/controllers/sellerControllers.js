@@ -133,7 +133,6 @@ export const postCar = async (req, res) => {
       return res.json({ success: false, message: "Image is required" })
     }
 
-    // 🔥 Upload image using modular utility
     const uploadResult = await uploadImageToCloudinary(req.file.path)
 
     const newCar = new Car({
