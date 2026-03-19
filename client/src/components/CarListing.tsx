@@ -1,8 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
-import { assets, CarCategories, CarLocations } from '../assets/assets'
-import JobCard from './JobCard'
-import type {Job} from '../context/AppContext'
+import { assets, CarCategories, CarLocations, CarDrivetrains, CarFuelTypes } from '../assets/assets'
 import CarCard from './CarCard'
 
 const JobListing = () => {
@@ -13,6 +11,12 @@ const JobListing = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedFuelType, setSelectedFuelType] = useState<string>('')
+  const [selectedDrivetrain, setSelectedDrivetrain] = useState<string>('')
+  const [selectedSteering, setSelectedSteering] = useState<string>('')
+  const [selectedCondition, setSelectedCondition] = useState<string>('')
+  const [mileageMin, setMileageMin] = useState<number | ''>('')
+  const [mileageMax, setMileageMax] = useState<number | ''>('')
 
   // const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs)
 
@@ -44,19 +48,57 @@ const JobListing = () => {
 
     const matchesSearchLocation = (car: any) => searchFilter.location === '' || car.location.toLowerCase().includes(searchFilter.location.toLowerCase())
 
+    const matchesFuelType = (car: any) => selectedFuelType === '' || car?.specs?.fuelType === selectedFuelType
+    const matchesDrivetrain = (car: any) => selectedDrivetrain === '' || car?.specs?.drivetrain === selectedDrivetrain
+    const matchesSteering = (car: any) => selectedSteering === '' || car?.specs?.steering === selectedSteering
+    const matchesCondition = (car: any) => selectedCondition === '' || car.condition === selectedCondition
+
+    const matchesMileage = (car: any) => {
+      const raw = car?.specs?.mileage
+      const mv = typeof raw === 'number' ? raw : Number(raw)
+
+      if (mileageMin === '' && mileageMax === '') return true
+      if (!Number.isFinite(mv)) return false
+
+      if (mileageMin !== '' && mv < Number(mileageMin)) return false
+      if (mileageMax !== '' && mv > Number(mileageMax)) return false
+
+      return true
+    }
+
     // const newFilteredJobs = jobs.slice().reverse().filter(
     //   (job: Job) => matchesCategory(job) && matchesLocation(job) && matchesTitle(job) && matchesSearchLocation(job)
     // )
 
     const newFilteredCars = cars.slice().reverse().filter(
-      (car: any) => matchesCategory(car) && matchesLocation(car) && matchesTitle(car) && matchesSearchLocation(car)
+      (car: any) =>
+        matchesCategory(car) &&
+        matchesLocation(car) &&
+        matchesTitle(car) &&
+        matchesSearchLocation(car) &&
+        matchesFuelType(car) &&
+        matchesDrivetrain(car) &&
+        matchesSteering(car) &&
+        matchesCondition(car) &&
+        matchesMileage(car)
     )
     
     setFilteredCars(newFilteredCars);
     setCurrentPage(1)
 
 
-  }, [cars, selectedCategories, selectedLocations, searchFilter])
+  }, [
+    cars,
+    selectedCategories,
+    selectedLocations,
+    searchFilter,
+    selectedFuelType,
+    selectedDrivetrain,
+    selectedSteering,
+    selectedCondition,
+    mileageMin,
+    mileageMax,
+  ])
 
   return (
     <div className='container 2xl:px-20 mx-auto flex flex-col lg:flex-row max-lg:space-y-8 py-8'>
@@ -129,6 +171,96 @@ const JobListing = () => {
               ))
             }
           </ul>
+        </div>
+
+        {/* Specs Filters */}
+        <div className={showFilter ? "" : "max-lg:hidden"}>
+          <h4 className='font-medium text-lg py-4 pt-14'>Search by Specs</h4>
+
+          <div className='space-y-6 text-gray-700'>
+            <div>
+              <label className='block text-sm mb-2'>Fuel type</label>
+              <select
+                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                value={selectedFuelType}
+                onChange={(e) => setSelectedFuelType(e.target.value)}
+              >
+                <option value=''>Any</option>
+                {CarFuelTypes.map((f, index) => (
+                  <option key={index} value={f}>{f}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className='block text-sm mb-2'>Drivetrain</label>
+              <select
+                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                value={selectedDrivetrain}
+                onChange={(e) => setSelectedDrivetrain(e.target.value)}
+              >
+                <option value=''>Any</option>
+                {CarDrivetrains.map((d, index) => (
+                  <option key={index} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className='block text-sm mb-2'>Steering</label>
+              <select
+                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                value={selectedSteering}
+                onChange={(e) => setSelectedSteering(e.target.value)}
+              >
+                <option value=''>Any</option>
+                <option value='Left'>Left</option>
+                <option value='Right'>Right</option>
+              </select>
+            </div>
+
+            <div>
+              <label className='block text-sm mb-2'>Condition</label>
+              <select
+                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                value={selectedCondition}
+                onChange={(e) => setSelectedCondition(e.target.value)}
+              >
+                <option value=''>Any</option>
+                <option value='New'>New</option>
+                <option value='Very good'>Very good</option>
+                <option value='Good'>Good</option>
+                <option value='Needs Repair'>Needs Repair</option>
+                <option value='Damaged'>Damaged</option>
+              </select>
+            </div>
+
+            <div className='flex gap-3'>
+              <div className='flex-1'>
+                <label className='block text-sm mb-2'>Mileage min</label>
+                <input
+                  type='number'
+                  min={0}
+                  className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                  value={mileageMin}
+                  onChange={(e) => setMileageMin(e.target.value === '' ? '' : Number(e.target.value))}
+                  placeholder='Min'
+                />
+              </div>
+
+              <div className='flex-1'>
+                <label className='block text-sm mb-2'>Mileage max</label>
+                <input
+                  type='number'
+                  min={0}
+                  className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                  value={mileageMax}
+                  onChange={(e) => setMileageMax(e.target.value === '' ? '' : Number(e.target.value))}
+                  placeholder='Max'
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       {/* Job listing */}

@@ -30,9 +30,17 @@ const Navbar = () => {
           <img onClick={() => navigate('/')} className='-mr-[6px] cursor-pointer w-12' src={assets.logo} alt="AutoMarket logo" />
           <span className='font-bold text-xl ml-[5px] mt-[5px] max-[400px]:hidden'>Auto<span className='font-normal'>Market</span></span>
         </div>
-          {userData ?
+        {userData ?
             <div className='flex items-center gap-3'>
-              <p className='max-sm:hidden'>Welcome, {userData.name}</p>
+              {String(userData.role).trim() === 'seller' && (
+                <Link
+                  to='/dashboard/manage-cars'
+                  className='text-blue-700 hover:text-blue-800 font-medium max-sm:hidden'
+                >
+                  Dashboard
+                </Link>
+              )}
+              <p className='max-sm:hidden'>{userData.name}</p>
               <div className='relative group'>
                 <img className='w-8 border rounded-full' src={userData.image} alt="" />
                 <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12'>
