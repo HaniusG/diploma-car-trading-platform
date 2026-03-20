@@ -19,24 +19,25 @@ const JobListing = () => {
   const [mileageMax, setMileageMax] = useState<number | ''>('')
 
   // const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs)
-
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openLocation, setOpenLocation] = useState(false);
   const [filteredCars, setFilteredCars] = useState<any>(cars)
 
 
- const handleCategoryChange = (category: string) => {
+  const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev: string[]) =>
       prev.includes(category)
-      ? prev.filter(c => c !== category)
-      : [...prev, category]
-  );
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
   };
 
   const handleLocationChange = (location: string) => {
     setSelectedLocations((prev: string[]) =>
       prev.includes(location)
-      ? prev.filter(c => c !== location)
-      : [...prev, location]
-  );
+        ? prev.filter(c => c !== location)
+        : [...prev, location]
+    );
   };
 
 
@@ -82,7 +83,7 @@ const JobListing = () => {
         matchesCondition(car) &&
         matchesMileage(car)
     )
-    
+
     setFilteredCars(newFilteredCars);
     setCurrentPage(1)
 
@@ -135,47 +136,61 @@ const JobListing = () => {
 
         {/* Category Filter */}
         <div className={showFilter ? "" : "max-lg:hidden"}>
-          <h4 className='font-medium text-lg py-4'>Search by Categories</h4>
-          <ul className='space-y-4 text-gray-600'>
-            {
-              CarCategories.map((category, index) => (
+          <h4
+            className='font-medium text-lg py-4 cursor-pointer flex justify-between items-center'
+            onClick={() => setOpenCategory(prev => !prev)}
+          >
+            Search by Categories
+            <span>{openCategory ? "−" : "+"}</span>
+          </h4>
+
+          {openCategory && (
+            <ul className='space-y-4 text-gray-600'>
+              {CarCategories.map((category, index) => (
                 <li className='flex gap-3 items-center' key={index}>
-                  <input 
-                  className='scale-125' 
-                  type="checkbox"
-                  onChange={()=>handleCategoryChange(category)}
-                  checked = {selectedCategories.includes(category)}
+                  <input
+                    className='scale-125'
+                    type="checkbox"
+                    onChange={() => handleCategoryChange(category)}
+                    checked={selectedCategories.includes(category)}
                   />
                   {category}
                 </li>
-              ))
-            }
-          </ul>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Location Filter */}
         <div className={showFilter ? "" : "max-lg:hidden"}>
-          <h4 className='font-medium text-lg py-4 pt-14'>Search by Location</h4>
-          <ul className='space-y-4 text-gray-600'>
-            {
-              CarLocations.map((location, index) => (
+          <h4
+            className='font-medium text-lg py-4 pt-5 cursor-pointer flex justify-between items-center'
+            onClick={() => setOpenLocation(prev => !prev)}
+          >
+            Search by Location
+            <span>{openLocation ? "−" : "+"}</span>
+          </h4>
+
+          {openLocation && (
+            <ul className='space-y-4 text-gray-600'>
+              {CarLocations.map((location, index) => (
                 <li className='flex gap-3 items-center' key={index}>
-                  <input 
-                  className='scale-125' 
-                  type="checkbox" 
-                  onChange={()=> handleLocationChange(location)}
-                  checked = {selectedLocations.includes(location)}
+                  <input
+                    className='scale-125'
+                    type="checkbox"
+                    onChange={() => handleLocationChange(location)}
+                    checked={selectedLocations.includes(location)}
                   />
                   {location}
                 </li>
-              ))
-            }
-          </ul>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Specs Filters */}
         <div className={showFilter ? "" : "max-lg:hidden"}>
-          <h4 className='font-medium text-lg py-4 pt-14'>Search by Specs</h4>
+          <h4 className='font-medium text-lg py-4 pt-5'>Search by Specs</h4>
 
           <div className='space-y-6 text-gray-700'>
             <div>
@@ -269,7 +284,7 @@ const JobListing = () => {
         <h3 className='font-medium text-3xl py-2' id='job-list'>Latest cars</h3>
         <p className='mb-8'>Get your desired car</p>
         <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
-          {filteredCars.slice((currentPage-1)*6, currentPage*6).map((car: any, index: number) => {
+          {filteredCars.slice((currentPage - 1) * 6, currentPage * 6).map((car: any, index: number) => {
             return <CarCard key={index} car={car} />
           })}
           {/* {filteredJobs.slice((currentPage-1)*6, currentPage*6).map((job: any, index: number) => {
@@ -280,17 +295,17 @@ const JobListing = () => {
         {/* Pagination */}
 
         {filteredCars.length > 0 && (
-           <div className='flex items-center justify-center space-x-2 mt-10'>
+          <div className='flex items-center justify-center space-x-2 mt-10'>
             <a href="#job-list">
-              <img onClick={()=>setCurrentPage(Math.max((currentPage-1),1))} src={assets.left_arrow_icon} alt="" />
+              <img onClick={() => setCurrentPage(Math.max((currentPage - 1), 1))} src={assets.left_arrow_icon} alt="" />
             </a>
-            {Array.from({length:Math.ceil(filteredCars.length/6)}).map((_, index)=>(
+            {Array.from({ length: Math.ceil(filteredCars.length / 6) }).map((_, index) => (
               <a key={index} href="#job-list">
-                <button onClick={() => setCurrentPage(index+1)} className={`w-10 cursor-pointer h-10 flex items-center justify-center border border-gray-300 rounded ${currentPage === index + 1 ? 'bg-blue-100 text-blue-500' : 'text-gray-500'}`}>{index+1}</button>
+                <button onClick={() => setCurrentPage(index + 1)} className={`w-10 cursor-pointer h-10 flex items-center justify-center border border-gray-300 rounded ${currentPage === index + 1 ? 'bg-blue-100 text-blue-500' : 'text-gray-500'}`}>{index + 1}</button>
               </a>
             ))}
-             <a href="#job-list">
-              <img onClick={()=>setCurrentPage(Math.min((currentPage+1), Math.ceil(filteredCars.length / 6)))} src={assets.right_arrow_icon} alt="" />
+            <a href="#job-list">
+              <img onClick={() => setCurrentPage(Math.min((currentPage + 1), Math.ceil(filteredCars.length / 6)))} src={assets.right_arrow_icon} alt="" />
             </a>
           </div>
         )}

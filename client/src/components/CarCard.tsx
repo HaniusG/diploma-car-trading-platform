@@ -21,8 +21,8 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
 
   return (
     <div className="border p-6 shadow rounded">
-      <div className="flex justify-between items-center">
-        <img className="h-20 rounded" src={car.image} alt={car.title} />
+      <div className="flex justify-center items-center">
+        <img className="w-[90%] h-42 object-cover rounded cursor-pointer transform hover:scale-105 transition duration-300" src={car.image} alt={car.title} />
       </div>
 
       <h4 className="font-medium text-xl mt-2">{car.title}</h4>

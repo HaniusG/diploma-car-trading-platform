@@ -323,7 +323,6 @@ const AddJobs = () => {
 
       {/* Specs section */}
       <div className='flex flex-col gap-4 w-full mt-4'>
-        {/* Brand & Model */}
         <div className='flex flex-col sm:flex-row gap-4'>
           <div className='flex-1'>
             <p className='mb-2'>Brand</p>

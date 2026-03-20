@@ -72,6 +72,7 @@ export const assets = {
 
 export const CarCategories = [
     "Sedan",
+    "Hatchback",
     "SUV",
     "Van / Minivan",
     "Pickup truck",
