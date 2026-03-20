@@ -27,6 +27,7 @@ const AddJobs = () => {
   const [isBrandManuallyEdited, setIsBrandManuallyEdited] = useState<boolean>(false)
   const [isModelManuallyEdited, setIsModelManuallyEdited] = useState<boolean>(false)
   const [year, setYear] = useState<number>(2020)
+  const [isYearManuallyEdited, setIsYearManuallyEdited] = useState<boolean>(false)
   const [mileage, setMileage] = useState<number>(0)
   const [transmission, setTransmission] = useState<string>('Automatic')
   const [fuelType, setFuelType] = useState<string>('Petrol')
@@ -112,15 +113,36 @@ const AddJobs = () => {
     return remaining.join(' ').trim()
   }
 
+  const guessYearFromTitle = (titleValue: string) => {
+    const tokens = String(titleValue)
+      .split(/[^a-zA-Z0-9]+/g)
+      .map((t) => t.trim())
+      .filter(Boolean)
+
+    for (const t of tokens) {
+      const n = Number(t)
+      if (Number.isFinite(n) && n >= 1900 && n <= 2100) {
+        return n
+      }
+    }
+    return ''
+  }
+
   const handleTitleChange = (nextTitle: string) => {
     setTitle(nextTitle)
 
     // Only auto-fill if the user hasn't manually edited the corresponding fields
     const canAutoBrand = !isBrandManuallyEdited
     const canAutoModel = !isModelManuallyEdited
-    if (!canAutoBrand && !canAutoModel) return
+    const canAutoYear = !isYearManuallyEdited
+    if (!canAutoBrand && !canAutoModel && !canAutoYear) return
 
     if (nextTitle.trim().length < 2) return
+
+    if (canAutoYear) {
+      const autoYear: any = guessYearFromTitle(nextTitle)
+      if (autoYear) setYear(autoYear)
+    }
 
     const autoBrand = guessBrandFromTitle(nextTitle)
 
@@ -207,6 +229,7 @@ const AddJobs = () => {
         setSteering('Left')
         setIsBrandManuallyEdited(false)
         setIsModelManuallyEdited(false)
+        setIsYearManuallyEdited(false)
       } else {
         toast.error(data.message)
       }
@@ -343,7 +366,10 @@ const AddJobs = () => {
               max={2100}
               className='w-full px-3 py-2 border-2 border-gray-300 rounded'
               value={year}
-              onChange={e => setYear(Number(e.target.value))}
+              onChange={e => {
+                setIsYearManuallyEdited(true)
+                setYear(Number(e.target.value))
+              }}
               required
             />
           </div>
