@@ -29,7 +29,6 @@ export type UserProfile = {
   name: string;
   email: string;
   image: string;
-  resume: string;
   __v: number;
 };
 

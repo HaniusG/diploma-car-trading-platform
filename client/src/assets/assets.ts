@@ -11,8 +11,6 @@ import money_icon from './money_icon.svg';
 import suitcase_icon from './suitcase_icon.svg';
 import person_icon from './person_icon.svg';
 import upload_area from './upload_area.svg';
-import resume_selected from './resume_selected.svg';
-import resume_not_selected from './resume_not_selected.svg';
 import play_store from './play_store.svg';
 import app_store from './app_store.svg';
 import back_arrow_icon from './back_arrow_icon.svg';
@@ -25,7 +23,6 @@ import home_icon from './home_icon.svg'
 import add_icon from './add_icon.svg'
 import profile_upload_icon from './profile_upload_icon.svg'
 import person_tick_icon from './person_tick_icon.svg'
-import resume_download_icon from './resume_download_icon.svg'
 import delete_icon from './delete_icon.svg'
 import email_icon from './email_icon.svg'
 import lock_icon from './lock_icon.svg'
@@ -38,8 +35,6 @@ export const assets = {
     search_icon,
     cross_icon,
     upload_area,
-    resume_not_selected,
-    resume_selected,
     mercedes_logo,
     toyota_logo,
     tesla_logo,
@@ -59,7 +54,6 @@ export const assets = {
     home_icon,
     add_icon,
     person_tick_icon,
-    resume_download_icon,
     profile_img,
     delete_icon,
     profile_upload_icon,
