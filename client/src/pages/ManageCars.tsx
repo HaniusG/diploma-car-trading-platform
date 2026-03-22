@@ -14,7 +14,7 @@ const ManageCars = () => {
   const [cars, setCars] = useState<any>(false)
 
   const { backendUrl, userToken } = useContext(AppContext)
-  // Funtion to fetch compnay Job Application data
+  // Funtion to fetch posted cars
   const fetchSellerCars = async () => {
     try {
       const { data } = await axios.get(backendUrl + '/api/seller/list-cars',
@@ -34,7 +34,7 @@ const ManageCars = () => {
     }
   }
 
-  // Function to change Job Visibility
+  // Function to change Car Visibility
   const changeCarVisibility = async (id: number) => {
 
     try {
