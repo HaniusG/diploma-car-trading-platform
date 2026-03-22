@@ -3,22 +3,6 @@ import Car from '../models/Car.js'
 import User from "../models/User.js"
 import { v2 as cloudinary } from "cloudinary"
 
-// Get user data (uses JWT + protectUser -> req.user)
-export const getUserData = async (req, res) => {
-  try {
-    const user = req.user
-
-    if (!user) {
-      return res.json({ success: false, message: 'User Not Found' })
-    }
-
-    res.json({ success: true, user })
-
-  } catch (error) {
-    res.json({ success: false, message: error.message })
-  }
-}
-
 // Apply for a car
 export const applyForCar = async (req, res) => {
   const { carId } = req.body

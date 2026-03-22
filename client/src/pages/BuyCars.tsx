@@ -27,7 +27,7 @@ const BuyCars = () => {
     fetchBuyerApplications,
   } = useContext(AppContext)
 
-  // Configuration for specifications display
+  // Config
   const specFields = [
     { key: 'brand', label: 'Brand' },
     { key: 'model', label: 'Model' },

@@ -6,6 +6,7 @@ import connectDB from './config/db.js'
 import * as Sentry from "@sentry/node";
 import { clerkWebhooks } from './controllers/webhooks.js'
 import sellerRoutes from './routes/sellerRoutes.js'
+import authRoutes from './routes/authRoutes.js'
 import connectCloudinary from './config/cloudinary.js'
 import carRoutes from './routes/carRoutes.js'
 import userRoutes from './routes/userRoutes.js'
@@ -30,6 +31,7 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 });
 // Webhook route needs raw body for signature verification
 app.post('/webhooks', express.raw({ type: 'application/json' }), clerkWebhooks)
+app.use('/api/auth', authRoutes)
 app.use('/api/seller', sellerRoutes)
 app.use('/api/cars', carRoutes)
 app.use('/api/users', userRoutes)

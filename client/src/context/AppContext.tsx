@@ -96,7 +96,7 @@ export const AppContextProvider = (props: any) => {
   // Function to fetch seller data
   const fetchUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/users/user', { headers: { token: userToken } })
+      const { data } = await axios.get(backendUrl + '/api/auth/user', { headers: { token: userToken } })
 
       if (data.success) {
         setUserData(data.user)

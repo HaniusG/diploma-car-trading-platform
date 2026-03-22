@@ -31,7 +31,7 @@ const UserLogin = () => {
     try {
       if (state === "Login") {
         // Unified user login (buyer or seller) 
-        const { data } = await axios.post(backendUrl + '/api/seller/login', { email, password })
+        const { data } = await axios.post(backendUrl + '/api/auth/login', { email, password })
       
         if (data.success) {
           setUserData(data.user)
@@ -55,7 +55,7 @@ const UserLogin = () => {
         console.log(formData.getAll(name));
         
         // Unified user registration
-        const { data } = await axios.post(backendUrl + '/api/seller/register', formData)
+        const { data } = await axios.post(backendUrl + '/api/auth/register', formData)
 
         if (data.success) {
           setUserData(data.user)

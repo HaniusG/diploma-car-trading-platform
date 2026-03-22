@@ -1,18 +1,9 @@
 import express from 'express'
-import { changeCarApplicationStatus, changeVisibility, getUserData, getSellerCarApplicants, getSellerPostedCars, loginUser, postCar, registerUser } from '../controllers/sellerControllers.js'
+import { changeCarApplicationStatus, changeVisibility, getSellerCarApplicants, getSellerPostedCars, postCar } from '../controllers/sellerControllers.js'
 import upload from '../config/multer.js'
 import { protectUser } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
-
-// Register a seller
-router.post('/register', upload.single('image'), registerUser)
-
-// Seller login
-router.post('/login', loginUser)
-
-// Get seller data
-router.get('/seller', protectUser, getUserData)
 
 // Post a job
 router.post('/post-car', upload.single('image'), protectUser, postCar)
