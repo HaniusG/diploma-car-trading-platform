@@ -221,6 +221,19 @@ export const CarDrivetrains = [
     "AWD",
 ]
 
+export const CarSteeringTypes = [
+    "Left",
+    "Right",
+]
+
+export const CarConditions = [
+    "New",
+    "Very good",
+    "Good",
+    "Needs Repair",
+    "Damaged",
+]
+
 // Sample data for Manage Jobs Page
 export const manageJobsData = [
     { _id: 1, title: "Full Stack Developer", date: 1729102298497, location: "Yerevan", applicants: 20 },

@@ -1,75 +1,87 @@
 import { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
-import { assets, CarCategories, CarLocations, CarDrivetrains, CarFuelTypes } from '../assets/assets'
+import { assets, CarCategories, CarLocations, CarDrivetrains, CarFuelTypes, CarSteeringTypes, CarConditions } from '../assets/assets'
 import CarCard from './CarCard'
 
-const JobListing = () => {
+const CarListing = () => {
 
   const { isSearched, searchFilter, setSearchFilter, cars } = useContext(AppContext)
 
   const [showFilter, setShowFilter] = useState<boolean>(false)
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
-  const [selectedFuelType, setSelectedFuelType] = useState<string>('')
-  const [selectedDrivetrain, setSelectedDrivetrain] = useState<string>('')
-  const [selectedSteering, setSelectedSteering] = useState<string>('')
-  const [selectedCondition, setSelectedCondition] = useState<string>('')
-  const [mileageMin, setMileageMin] = useState<number | ''>('')
-  const [mileageMax, setMileageMax] = useState<number | ''>('')
 
-  // const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobs)
+  const [filters, setFilters] = useState({
+    categories: [] as string[],
+    locations: [] as string[],
+    fuelType: '',
+    drivetrain: '',
+    steering: '',
+    condition: '',
+    mileageMin: '' as number | '',
+    mileageMax: '' as number | '',
+    priceMin: '' as number | '',
+    priceMax: '' as number | '',
+  });
+
   const [openCategory, setOpenCategory] = useState(false);
   const [openLocation, setOpenLocation] = useState(false);
   const [filteredCars, setFilteredCars] = useState<any>(cars)
 
+  // Configuration for automated select filters
+  const selectFilters = [
+    { label: 'Fuel type', key: 'fuelType', options: CarFuelTypes },
+    { label: 'Drivetrain', key: 'drivetrain', options: CarDrivetrains },
+    { label: 'Steering', key: 'steering', options: CarSteeringTypes },
+    { label: 'Condition', key: 'condition', options: CarConditions },
+  ];
 
   const handleCategoryChange = (category: string) => {
-    setSelectedCategories((prev: string[]) =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
+    setFilters(prev => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter(c => c !== category)
+        : [...prev.categories, category]
+    }));
   };
 
   const handleLocationChange = (location: string) => {
-    setSelectedLocations((prev: string[]) =>
-      prev.includes(location)
-        ? prev.filter(c => c !== location)
-        : [...prev, location]
-    );
+    setFilters(prev => ({
+      ...prev,
+      locations: prev.locations.includes(location)
+        ? prev.locations.filter(c => c !== location)
+        : [...prev.locations, location]
+    }));
   };
 
-
   useEffect(() => {
-    const matchesCategory = (car: any) => selectedCategories.length === 0 || selectedCategories.includes(car.category)
-    const matchesLocation = (car: any) => selectedLocations.length === 0 || selectedLocations.includes(car.location)
-
+    const matchesCategory = (car: any) => filters.categories.length === 0 || filters.categories.includes(car.category)
+    const matchesLocation = (car: any) => filters.locations.length === 0 || filters.locations.includes(car.location)
     const matchesTitle = (car: any) => searchFilter.title === '' || car.title.toLowerCase().includes(searchFilter.title.toLowerCase())
-
     const matchesSearchLocation = (car: any) => searchFilter.location === '' || car.location.toLowerCase().includes(searchFilter.location.toLowerCase())
 
-    const matchesFuelType = (car: any) => selectedFuelType === '' || car?.specs?.fuelType === selectedFuelType
-    const matchesDrivetrain = (car: any) => selectedDrivetrain === '' || car?.specs?.drivetrain === selectedDrivetrain
-    const matchesSteering = (car: any) => selectedSteering === '' || car?.specs?.steering === selectedSteering
-    const matchesCondition = (car: any) => selectedCondition === '' || car.condition === selectedCondition
+    const matchesFuelType = (car: any) => filters.fuelType === '' || car?.specs?.fuelType === filters.fuelType
+    const matchesDrivetrain = (car: any) => filters.drivetrain === '' || car?.specs?.drivetrain === filters.drivetrain
+    const matchesSteering = (car: any) => filters.steering === '' || car?.specs?.steering === filters.steering
+    const matchesCondition = (car: any) => filters.condition === '' || car.condition === filters.condition
 
     const matchesMileage = (car: any) => {
       const raw = car?.specs?.mileage
       const mv = typeof raw === 'number' ? raw : Number(raw)
-
-      if (mileageMin === '' && mileageMax === '') return true
+      if (filters.mileageMin === '' && filters.mileageMax === '') return true
       if (!Number.isFinite(mv)) return false
-
-      if (mileageMin !== '' && mv < Number(mileageMin)) return false
-      if (mileageMax !== '' && mv > Number(mileageMax)) return false
-
+      if (filters.mileageMin !== '' && mv < Number(filters.mileageMin)) return false
+      if (filters.mileageMax !== '' && mv > Number(filters.mileageMax)) return false
       return true
     }
 
-    // const newFilteredJobs = jobs.slice().reverse().filter(
-    //   (job: Job) => matchesCategory(job) && matchesLocation(job) && matchesTitle(job) && matchesSearchLocation(job)
-    // )
+    const matchesPrice = (car: any) => {
+      const pv = typeof car.price === 'number' ? car.price : Number(car.price)
+      if (filters.priceMin === '' && filters.priceMax === '') return true
+      if (!Number.isFinite(pv)) return false
+      if (filters.priceMin !== '' && pv < Number(filters.priceMin)) return false
+      if (filters.priceMax !== '' && pv > Number(filters.priceMax)) return false
+      return true
+    }
 
     const newFilteredCars = cars.slice().reverse().filter(
       (car: any) =>
@@ -81,24 +93,17 @@ const JobListing = () => {
         matchesDrivetrain(car) &&
         matchesSteering(car) &&
         matchesCondition(car) &&
-        matchesMileage(car)
+        matchesMileage(car) &&
+        matchesPrice(car)
     )
 
     setFilteredCars(newFilteredCars);
     setCurrentPage(1)
 
-
   }, [
     cars,
-    selectedCategories,
-    selectedLocations,
     searchFilter,
-    selectedFuelType,
-    selectedDrivetrain,
-    selectedSteering,
-    selectedCondition,
-    mileageMin,
-    mileageMax,
+    filters
   ])
 
   return (
@@ -152,7 +157,7 @@ const JobListing = () => {
                     className='scale-125'
                     type="checkbox"
                     onChange={() => handleCategoryChange(category)}
-                    checked={selectedCategories.includes(category)}
+                    checked={filters.categories.includes(category)}
                   />
                   {category}
                 </li>
@@ -179,7 +184,7 @@ const JobListing = () => {
                     className='scale-125'
                     type="checkbox"
                     onChange={() => handleLocationChange(location)}
-                    checked={selectedLocations.includes(location)}
+                    checked={filters.locations.includes(location)}
                   />
                   {location}
                 </li>
@@ -193,62 +198,21 @@ const JobListing = () => {
           <h4 className='font-medium text-lg py-4 pt-5'>Search by Specs</h4>
 
           <div className='space-y-6 text-gray-700'>
-            <div>
-              <label className='block text-sm mb-2'>Fuel type</label>
-              <select
-                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
-                value={selectedFuelType}
-                onChange={(e) => setSelectedFuelType(e.target.value)}
-              >
-                <option value=''>Any</option>
-                {CarFuelTypes.map((f, index) => (
-                  <option key={index} value={f}>{f}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className='block text-sm mb-2'>Drivetrain</label>
-              <select
-                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
-                value={selectedDrivetrain}
-                onChange={(e) => setSelectedDrivetrain(e.target.value)}
-              >
-                <option value=''>Any</option>
-                {CarDrivetrains.map((d, index) => (
-                  <option key={index} value={d}>{d}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className='block text-sm mb-2'>Steering</label>
-              <select
-                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
-                value={selectedSteering}
-                onChange={(e) => setSelectedSteering(e.target.value)}
-              >
-                <option value=''>Any</option>
-                <option value='Left'>Left</option>
-                <option value='Right'>Right</option>
-              </select>
-            </div>
-
-            <div>
-              <label className='block text-sm mb-2'>Condition</label>
-              <select
-                className='w-full px-3 py-2 border-2 border-gray-300 rounded'
-                value={selectedCondition}
-                onChange={(e) => setSelectedCondition(e.target.value)}
-              >
-                <option value=''>Any</option>
-                <option value='New'>New</option>
-                <option value='Very good'>Very good</option>
-                <option value='Good'>Good</option>
-                <option value='Needs Repair'>Needs Repair</option>
-                <option value='Damaged'>Damaged</option>
-              </select>
-            </div>
+            {selectFilters.map((sf) => (
+              <div key={sf.key}>
+                <label className='block text-sm mb-2'>{sf.label}</label>
+                <select
+                  className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                  value={(filters as any)[sf.key]}
+                  onChange={(e) => setFilters(prev => ({ ...prev, [sf.key]: e.target.value }))}
+                >
+                  <option value=''>Any</option>
+                  {sf.options.map((option, index) => (
+                    <option key={index} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+            ))}
 
             <div className='flex gap-3'>
               <div className='flex-1'>
@@ -257,8 +221,8 @@ const JobListing = () => {
                   type='number'
                   min={0}
                   className='w-full px-3 py-2 border-2 border-gray-300 rounded'
-                  value={mileageMin}
-                  onChange={(e) => setMileageMin(e.target.value === '' ? '' : Number(e.target.value))}
+                  value={filters.mileageMin}
+                  onChange={(e) => setFilters(prev => ({ ...prev, mileageMin: e.target.value === '' ? '' : Number(e.target.value) }))}
                   placeholder='Min'
                 />
               </div>
@@ -269,8 +233,34 @@ const JobListing = () => {
                   type='number'
                   min={0}
                   className='w-full px-3 py-2 border-2 border-gray-300 rounded'
-                  value={mileageMax}
-                  onChange={(e) => setMileageMax(e.target.value === '' ? '' : Number(e.target.value))}
+                  value={filters.mileageMax}
+                  onChange={(e) => setFilters(prev => ({ ...prev, mileageMax: e.target.value === '' ? '' : Number(e.target.value) }))}
+                  placeholder='Max'
+                />
+              </div>
+            </div>
+
+            <div className='flex gap-3'>
+              <div className='flex-1'>
+                <label className='block text-sm mb-2'>Price min</label>
+                <input
+                  type='number'
+                  min={0}
+                  className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                  value={filters.priceMin}
+                  onChange={(e) => setFilters(prev => ({ ...prev, priceMin: e.target.value === '' ? '' : Number(e.target.value) }))}
+                  placeholder='Min'
+                />
+              </div>
+
+              <div className='flex-1'>
+                <label className='block text-sm mb-2'>Price max</label>
+                <input
+                  type='number'
+                  min={0}
+                  className='w-full px-3 py-2 border-2 border-gray-300 rounded'
+                  value={filters.priceMax}
+                  onChange={(e) => setFilters(prev => ({ ...prev, priceMax: e.target.value === '' ? '' : Number(e.target.value) }))}
                   placeholder='Max'
                 />
               </div>
@@ -278,33 +268,30 @@ const JobListing = () => {
           </div>
         </div>
       </div>
-      {/* Job listing */}
+      {/* Car listing */}
 
       <section className='w-full lg:w-3/4 text-gray-800 max-lg:px-4'>
-        <h3 className='font-medium text-3xl py-2' id='job-list'>Latest cars</h3>
+        <h3 className='font-medium text-3xl py-2' id='car-list'>Latest cars</h3>
         <p className='mb-8'>Get your desired car</p>
         <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
           {filteredCars.slice((currentPage - 1) * 6, currentPage * 6).map((car: any, index: number) => {
             return <CarCard key={index} car={car} />
           })}
-          {/* {filteredJobs.slice((currentPage-1)*6, currentPage*6).map((job: any, index: number) => {
-            return <JobCard key={index} job={job} />
-          })} */}
         </div>
 
         {/* Pagination */}
 
         {filteredCars.length > 0 && (
           <div className='flex items-center justify-center space-x-2 mt-10'>
-            <a href="#job-list">
+            <a href="#car-list">
               <img onClick={() => setCurrentPage(Math.max((currentPage - 1), 1))} src={assets.left_arrow_icon} alt="" />
             </a>
             {Array.from({ length: Math.ceil(filteredCars.length / 6) }).map((_, index) => (
-              <a key={index} href="#job-list">
+              <a key={index} href="#car-list">
                 <button onClick={() => setCurrentPage(index + 1)} className={`w-10 cursor-pointer h-10 flex items-center justify-center border border-gray-300 rounded ${currentPage === index + 1 ? 'bg-blue-100 text-blue-500' : 'text-gray-500'}`}>{index + 1}</button>
               </a>
             ))}
-            <a href="#job-list">
+            <a href="#car-list">
               <img onClick={() => setCurrentPage(Math.min((currentPage + 1), Math.ceil(filteredCars.length / 6)))} src={assets.right_arrow_icon} alt="" />
             </a>
           </div>
@@ -315,4 +302,4 @@ const JobListing = () => {
   )
 }
 
-export default JobListing
+export default CarListing;
