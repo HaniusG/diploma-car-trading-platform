@@ -29,20 +29,36 @@ const Navbar = () => {
         </div>
         {userData ?
             <div className='flex items-center gap-3'>
-              {String(userData.role).trim() === 'seller' && (
+              {String(userData.role).trim() === 'seller' ? (
                 <Link
                   to='/dashboard/manage-cars'
                   className='text-blue-700 hover:text-blue-800 font-medium max-sm:hidden'
                 >
                   Dashboard
                 </Link>
+              ) : (
+                <Link
+                  to='/applications'
+                  className='text-blue-700 hover:text-blue-800 font-medium max-sm:hidden'
+                >
+                  My Inquiries
+                </Link>
               )}
               <p className='max-sm:hidden'>{userData.name}</p>
               <div className='relative group'>
-                <img className='w-8 border rounded-full object-cover' src={userData.image} alt="" />
+                <img className='w-8 border rounded-full object-cover cursor-pointer' src={userData.image} alt="" />
                 <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12'>
-                  <ul className='list-none m-0 p-2 bg-white rounded-md border text-sm'>
-                    <li onClick={logout} className='py-1 px-2 cursor-pointer pr-10'>Logout</li>
+                  <ul className='list-none m-0 p-2 bg-white rounded-md border text-sm min-w-[120px]'>
+                    {String(userData.role).trim() === 'seller' ? (
+                      <Link to='/dashboard/manage-cars'>
+                        <li className='py-1.5 px-3 cursor-pointer hover:bg-gray-100 rounded sm:hidden'>Dashboard</li>
+                      </Link>
+                    ) : (
+                      <Link to='/applications'>
+                        <li className='py-1.5 px-3 cursor-pointer hover:bg-gray-100 rounded sm:hidden'>My Inquiries</li>
+                      </Link>
+                    )}
+                    <li onClick={logout} className='py-1.5 px-3 cursor-pointer hover:bg-gray-100 rounded border-t mt-1'>Logout</li>
                   </ul>
                 </div>
               </div>

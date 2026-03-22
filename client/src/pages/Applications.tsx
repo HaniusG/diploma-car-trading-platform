@@ -1,65 +1,74 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import Navbar from '../components/Navbar'
-import { assets } from '../assets/assets'
 import moment from 'moment'
 import Footer from '../components/Footer'
 import { AppContext } from '../context/AppContext'
-import { useAuth, useUser } from '@clerk/clerk-react'
-import axios from 'axios'
-import { toast } from 'react-toastify'
 import Loading from '../components/Loading'
 
 const Applications = () => {
 
-  const { user } = useUser()
-  const { getToken } = useAuth()
-
-  const [isEdit, setIsEdit] = useState<boolean>(false)
-
-  const { backendUrl, userData, userApplications, fetchUserData, fetchUserApplications } = useContext(AppContext)
-
-
+  const { userData, buyerApplications, fetchBuyerApplications, userToken } = useContext(AppContext)
 
   useEffect(() => {
-    if (user) {
-      fetchUserApplications()
+    if (userToken) {
+      fetchBuyerApplications()
     }
-  }, [user])
+  }, [userToken])
 
   return userData ? (
     <>
       <Navbar />
       <div className='container px-4 min-h-[65vh] 2xl:px-20 mx-auto my-10'>
-        <h2 className='text-xl font-semibold mb-4'>Cars Applied</h2>
-        <table className='min-w-full bg-white border rounded-lg'>
-          <thead>
-            <tr>
-              <th className='py-3 px-4 border-b text-left'>Seller</th>
-              <th className='py-3 px-4 border-b text-left'>Car Title</th>
-              <th className='py-3 px-4 border-b text-left max-sm:hidden'>Location</th>
-              <th className='py-3 px-4 border-b text-left max-sm:hidden'>Date</th>
-              <th className='py-3 px-4 border-b text-left'>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userApplications.map((job: any, index: number) => true ? (
-              <tr key={index}>
-                <td className='py-3 px-4 flex items-center gap-2 border-b'>
-                  <img className='w-8 h-8' src={job.sellerId.image} alt="" />
-                  {job.sellerId.name}
-                </td>
-                <td className='py-2 px-4 border-b'>{job.jobId.title}</td>
-                <td className='py-2 px-4 border-b max-sm:hidden'>{job.jobId.location}</td>
-                <td className='py-2 px-4 border-b max-sm:hidden'>{moment(job.date).format('ll')}</td>
-                <td className='py-2 px-4 border-b'>
-                  <span className={`${job.status === 'Accepted' ? 'bg-green-100' : job.status === 'Rejected' ? 'bg-red-100' : 'bg-blue-100'} px-4 py-1.5 rounded`}>
-                    {job.status}
-                  </span>
-                </td>
+        <h2 className='text-2xl font-semibold mb-6'>My Car Inquiries</h2>
+        
+        <div className='overflow-x-auto border rounded-lg shadow-sm'>
+          <table className='min-w-full bg-white'>
+            <thead>
+              <tr className='bg-gray-50'>
+                <th className='py-4 px-6 border-b text-left text-sm font-semibold text-gray-600'>Seller</th>
+                <th className='py-4 px-6 border-b text-left text-sm font-semibold text-gray-600'>Car Model</th>
+                <th className='py-4 px-6 border-b text-left text-sm font-semibold text-gray-600 max-sm:hidden'>Location</th>
+                <th className='py-4 px-6 border-b text-left text-sm font-semibold text-gray-600 max-sm:hidden'>Inquiry Date</th>
+                <th className='py-4 px-6 border-b text-left text-sm font-semibold text-gray-600'>Status</th>
               </tr>
-            ) : (null))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {buyerApplications && buyerApplications.length > 0 ? (
+                buyerApplications.map((app: any, index: number) => (
+                  <tr key={index} className='hover:bg-gray-50 transition-colors'>
+                    <td className='py-4 px-6 border-b'>
+                      <div className='flex items-center gap-3'>
+                        <img 
+                          className='w-10 h-10 rounded-full object-cover border' 
+                          src={app.sellerId?.image || '/default-profile.png'} 
+                          alt={app.sellerId?.name} 
+                        />
+                        <span className='font-medium text-gray-800'>{app.sellerId?.name}</span>
+                      </div>
+                    </td>
+                    <td className='py-4 px-6 border-b font-medium text-blue-600'>{app.carId?.title}</td>
+                    <td className='py-4 px-6 border-b text-gray-600 max-sm:hidden'>{app.carId?.location}</td>
+                    <td className='py-4 px-6 border-b text-gray-600 max-sm:hidden'>{moment(app.date).format('ll')}</td>
+                    <td className='py-4 px-6 border-b'>
+                      <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-semibold
+                        ${app.status === 'Accepted' ? 'bg-green-100 text-green-700' : 
+                          app.status === 'Rejected' ? 'bg-red-100 text-red-700' : 
+                          'bg-blue-100 text-blue-700'}`}>
+                        {app.status === 'Accepted' ? 'Contacted' : app.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className='py-10 text-center text-gray-500'>
+                    You haven't expressed interest in any cars yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       <Footer />
     </>
