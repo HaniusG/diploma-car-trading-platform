@@ -80,7 +80,7 @@ const ViewApplications = () => {
               <tr key={index} className='text-gray-700'>
                 <td className='py-2 px-4 border-b text-center'>{index + 1}</td>
                 <td className='py-2 px-4 border-b text-center flex items-center'>
-                  <img className='w-10 h-10 rounded-full mr-3 max-sm:hidden' src={applicant.userId.image} alt="" />
+                  <img className='w-10 h-10 rounded-full mr-3 max-sm:hidden object-cover' src={applicant.userId.image} alt="" />
                   <span>{applicant.userId.name}</span>
                 </td>
                 <td className='py-2 px-4 border-b max-sm:hidden'>{applicant.carId.title}</td>

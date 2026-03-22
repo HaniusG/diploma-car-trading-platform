@@ -20,7 +20,7 @@ const CarCard: React.FC<CarCardProps> = ({ car }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="border p-6 shadow rounded">
+    <div className="border p-6 shadow rounded bg-gray-100">
       <div className="flex justify-center items-center">
         <img className="w-[90%] h-42 object-cover rounded cursor-pointer transform hover:scale-105 transition duration-300" src={car.image} alt={car.title} />
       </div>

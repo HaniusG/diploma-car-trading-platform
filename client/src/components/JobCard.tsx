@@ -32,7 +32,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
   
 
   return (
-    <div className='border p-6 shadow rounded'>
+    <div className='border p-6 shadow rounded bg-gray-100'>
       <div className='flex justify-between items-center'>
         <img className='h-8' src={job.sellerId.image} alt="" />
       </div>
