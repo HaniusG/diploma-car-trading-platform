@@ -73,7 +73,6 @@ export const AppContextProvider = (props: any) => {
   const [showLogin, setShowLogin] = useState<boolean>(false)
   const [userToken, setUserToken] = useState(null)
   const [userData, setUserData] = useState(null)
-  // const [userData, setUserData] = useState<UserProfile | null>(null)
   const [buyerApplications, setBuyerApplications] = useState<UserApplication[]>([])
   const [role, setRole] = useState<string>('')
 
