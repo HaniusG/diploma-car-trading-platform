@@ -46,7 +46,7 @@ const Navbar = () => {
               )}
               <p className='max-sm:hidden'>{userData.name}</p>
               <div className='relative group'>
-                <img className='w-8 border rounded-full object-cover cursor-pointer' src={userData.image} alt="" />
+                <img className='w-8 h-8 object-cover border rounded-full object-cover cursor-pointer' src={userData.image} alt="" />
                 <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12'>
                   <ul className='list-none m-0 p-2 bg-white rounded-md border text-sm min-w-[120px]'>
                     {String(userData.role).trim() === 'seller' ? (
