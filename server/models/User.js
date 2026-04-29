@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
   image: {type: String, required: true},
   role: {type: String, required: false},
   password: {type: String, required: true},
+  rating: {type: Number, default: 0},
+  ratingCount: {type: Number, default: 0},
 })
 
 const User = mongoose.model('User', userSchema)

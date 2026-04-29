@@ -83,3 +83,31 @@ export const updateUserResume = async (req, res) => {
   }
 
 }
+
+// Rate a seller
+export const rateSeller = async (req, res) => {
+  try {
+    const { sellerId, rating } = req.body;
+    const userId = req.user._id;
+
+    if (rating < 1 || rating > 5) {
+      return res.json({ success: false, message: 'Rating must be between 1 and 5' });
+    }
+
+    const seller = await User.findById(sellerId);
+    if (!seller) {
+      return res.json({ success: false, message: 'Seller not found' });
+    }
+
+    // Calculate new average rating
+    const currentTotalRating = seller.rating * seller.ratingCount;
+    seller.ratingCount += 1;
+    seller.rating = (currentTotalRating + rating) / seller.ratingCount;
+
+    await seller.save();
+
+    res.json({ success: true, message: 'Rating submitted successfully', rating: seller.rating, ratingCount: seller.ratingCount });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+}

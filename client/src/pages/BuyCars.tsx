@@ -27,6 +27,38 @@ const BuyCars = () => {
     fetchBuyerApplications,
   } = useContext(AppContext)
 
+  const [hoverRating, setHoverRating] = useState(0)
+
+  const handleRate = async (rating: number) => {
+    try {
+      if (!userData || !userToken) {
+        return toast.error('Login to rate the seller')
+      }
+
+      const { data } = await axios.post(`${backendUrl}/api/users/rate-seller`,
+        { sellerId: carData.sellerId._id, rating },
+        { headers: { token: userToken } }
+      )
+
+      if (data.success) {
+        toast.success('Rated successfully!')
+        // Update local state to reflect new rating
+        setCarData((prev: any) => ({
+          ...prev,
+          sellerId: {
+            ...prev.sellerId,
+            rating: data.rating,
+            ratingCount: data.ratingCount
+          }
+        }))
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error: any) {
+      toast.error(error.message)
+    }
+  }
+
   // Config
   const specFields = [
     { key: 'brand', label: 'Brand' },
@@ -110,14 +142,49 @@ const BuyCars = () => {
                 <div className='text-center md:text-left text-neutral-700'>
                   <h1 className='text-2xl sm:text-4xl font-medium'>{carData.title}</h1>
                   <div className='flex flex-row flex-wrap max-md:justify-center gap-y-2 gap-6 items-center text-gray-600 mt-2'>
-                    <span className='flex items-center gap-2'>
-                      <img
-                        src={carData.sellerId?.image || assets.profile_img}
-                        alt={carData.sellerId?.name}
-                        className='w-8 h-8 rounded-full object-cover border'
-                      />
-                      <span className='font-medium'>{carData.sellerId?.name}</span>
-                    </span>
+                    <div className='flex flex-col gap-1'>
+                      <div className='flex items-center gap-2'>
+                        <img
+                          src={carData.sellerId?.image || assets.profile_img}
+                          alt={carData.sellerId?.name}
+                          className='w-8 h-8 rounded-full object-cover border'
+                        />
+                        <span className='font-medium'>{carData.sellerId?.name}</span>
+                      </div>
+                      <div className='flex items-center gap-1 group relative' onMouseLeave={() => setHoverRating(0)}>
+                        <div className='flex'>
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <svg
+                              key={star}
+                              onClick={() => handleRate(star)}
+                              onMouseEnter={() => setHoverRating(star)}
+                              className={`w-4 h-4 cursor-pointer transition-colors ${
+                                (hoverRating || Math.round(carData.sellerId?.rating || 0)) >= star
+                                  ? 'text-yellow-400 fill-yellow-400'
+                                  : 'text-gray-300 fill-gray-300'
+                              }`}
+                              viewBox="0 0 20 20"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
+                        <span className='text-xs text-gray-500'>
+                          ({carData.sellerId?.ratingCount || 0})
+                        </span>
+                        {hoverRating > 0 && (
+                          <div className='absolute -top-8 left-0 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-100 transition-opacity z-10'>
+                            {hoverRating} / 5
+                          </div>
+                        )}
+                        {!hoverRating && carData.sellerId?.rating > 0 && (
+                           <div className='absolute -top-8 left-0 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10'>
+                           {carData.sellerId.rating.toFixed(1)} / 5
+                         </div>
+                        )}
+                      </div>
+                    </div>
                     <span className='flex items-center gap-1'>
                       <img src={assets.location_icon} alt="" />
                       {carData.location}
@@ -140,9 +207,9 @@ const BuyCars = () => {
                   onClick={applyHandler} 
                   className={`p-2.5 px-10 text-white rounded cursor-pointer duration-200 ${isAlreadyApplied ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
                 >
-                  {isAlreadyApplied ? 'Already applied' : 'Buy the car'}
+                  {isAlreadyApplied ? 'Already applied' : 'Buy'}
                 </button>
-                <p className='mt-1 text-gray-600'>Posted {moment(carData.date).fromNow()}</p>
+                <p className='mt-1 text-gray-600'>{moment(carData.date).fromNow()}</p>
               </div>
             </div>
           </div>

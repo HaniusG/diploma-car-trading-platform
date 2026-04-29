@@ -1,5 +1,5 @@
 import express from 'express'
-import { applyForCar, getUserJobApplications, updateUserResume } from '../controllers/userController.js'
+import { applyForCar, getUserJobApplications, updateUserResume, rateSeller } from '../controllers/userController.js'
 import upload from '../config/multer.js'
 import { protectUser } from '../middleware/authMiddleware.js'
 
@@ -13,5 +13,8 @@ router.get('/applications', protectUser, getUserJobApplications)
 
 // Update user profile (resume) (requires JWT token)
 router.post('/update-resume', protectUser, upload.single('resume'), updateUserResume)
+
+// Rate a seller
+router.post('/rate-seller', protectUser, rateSeller)
 
 export default router;
