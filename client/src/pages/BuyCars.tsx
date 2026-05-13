@@ -48,7 +48,8 @@ const BuyCars = () => {
           sellerId: {
             ...prev.sellerId,
             rating: data.rating,
-            ratingCount: data.ratingCount
+            ratingCount: data.ratingCount,
+            ratedBy: data.ratedBy
           }
         }))
       } else {
@@ -58,6 +59,9 @@ const BuyCars = () => {
       toast.error(error.message)
     }
   }
+
+  // Check if user has already rated
+  const isAlreadyRated = carData?.sellerId?.ratedBy?.includes(userData?._id);
 
   // Config
   const specFields = [
@@ -156,9 +160,11 @@ const BuyCars = () => {
                           {[1, 2, 3, 4, 5].map((star) => (
                             <svg
                               key={star}
-                              onClick={() => handleRate(star)}
-                              onMouseEnter={() => setHoverRating(star)}
-                              className={`w-4 h-4 cursor-pointer transition-colors ${
+                              onClick={() => !isAlreadyRated && handleRate(star)}
+                              onMouseEnter={() => !isAlreadyRated && setHoverRating(star)}
+                              className={`w-4 h-4 transition-colors ${
+                                !isAlreadyRated ? 'cursor-pointer' : 'cursor-default'
+                              } ${
                                 (hoverRating || Math.round(carData.sellerId?.rating || 0)) >= star
                                   ? 'text-yellow-400 fill-yellow-400'
                                   : 'text-gray-300 fill-gray-300'
@@ -173,7 +179,7 @@ const BuyCars = () => {
                         <span className='text-xs text-gray-500'>
                           ({carData.sellerId?.ratingCount || 0})
                         </span>
-                        {hoverRating > 0 && (
+                        {hoverRating > 0 && !isAlreadyRated && (
                           <div className='absolute -top-8 left-0 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-100 transition-opacity z-10'>
                             {hoverRating} / 5
                           </div>
@@ -182,6 +188,11 @@ const BuyCars = () => {
                            <div className='absolute -top-8 left-0 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10'>
                            {carData.sellerId.rating.toFixed(1)} / 5
                          </div>
+                        )}
+                        {isAlreadyRated && (
+                          <div className='absolute -top-8 left-0 bg-green-600 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap'>
+                            You have already rated
+                          </div>
                         )}
                       </div>
                     </div>
